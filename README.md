@@ -31,5 +31,11 @@ Este repositorio contiene el código fuente del sistema de gestión desarrollado
 
 ---
 
+## **Requisitos**
+
+  - Android 8.0 o superior
+
+---
+
 ## Licencia
 Este proyecto está licenciado bajo la Licencia MIT. Para más detalles, consulta el archivo LICENSE.
