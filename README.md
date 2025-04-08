@@ -23,7 +23,7 @@ Este repositorio contiene el código fuente del sistema de gestión desarrollado
 
 ## **Tecnologías Utilizadas**
 
-### Frontend (Aplicación Móvil y Web)
+### Frontend y Backend (Aplicación Móvil)
 - **Android**:
   - Lenguaje: Kotlin
   - Framework: Android Jetpack Compose
