@@ -22,35 +22,55 @@ import com.app.soffyapp.R
 import com.app.soffyapp.presentation.screens.detail.DetailScreen
 import com.app.soffyapp.presentation.screens.home.HomeScreen
 
+/**
+ * Componente principal de navegación de la aplicación
+ *
+ * Implementa un patrón de navegación con:
+ * - Barra inferior de navegación (Bottom Navigation)
+ * - Gestión de estado de navegación
+ * - Soporte para múltiples pantallas
+ *
+ * @OptIn ExperimentalMaterial3Api - Indica uso de APIs experimentales de Material 3
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppNavigation() {
+    // Controlador de navegación que maneja el back stack
     val navController = rememberNavController()
 
-    // Obtener la ruta actual
+    // Estado observables para la ruta actual
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
 
+    // Scaffold es el layout principal que incluye la estructura de la app
     Scaffold(
         bottomBar = {
+            // Barra de navegación inferior
             NavigationBar {
+                // Itera sobre todas las pantallas definidas
                 Screens.values.forEach { screen ->
                     NavigationBarItem(
                         icon = {
+                            // Icono del item de navegación
                             Icon(
                                 painter = painterResource(id = screen.iconRes),
-                                contentDescription = screen.route
+                                contentDescription = screen.route // Accesibilidad
                             )
                         },
-                        label = { Text(screen.title) },
-                        selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
+                        label = { Text(screen.title) }, // Texto del item
+                        selected = currentDestination?.hierarchy?.any {
+                            it.route == screen.route
+                        } == true, // Estado seleccionado
                         onClick = {
+                            // Navegación con configuración optimizada:
                             navController.navigate(screen.route) {
-                                // Configuración para navegación limpia
+                                // 1. Limpia back stack hasta el inicio
                                 popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
+                                    saveState = true // Conserva estado
                                 }
+                                // 2. Evita múltiples instancias
                                 launchSingleTop = true
+                                // 3. Restaura estado previo si existe
                                 restoreState = true
                             }
                         }
@@ -59,26 +79,39 @@ fun AppNavigation() {
             }
         }
     ) { innerPadding ->
+        // Host de navegación que contiene las pantallas
         NavHost(
             navController = navController,
-            startDestination = Screens.Home.route,
+            startDestination = Screens.Home.route, // Pantalla inicial
             modifier = Modifier.padding(innerPadding)
         ) {
+            // Definición de pantallas/composables
             composable(Screens.Home.route) { HomeScreen(navController) }
             composable(Screens.Detail.route) { DetailScreen(navController) }
         }
     }
 }
 
+/**
+ * Clase sellada que define las pantallas de la aplicación
+ *
+ * @property route Ruta única para la navegación
+ * @property title Título mostrado en la UI
+ * @property iconRes Recurso del icono para la barra de navegación
+ */
 sealed class Screens(
     val route: String,
     val title: String,
-    val iconRes: Int // ID del recurso del icono
+    val iconRes: Int
 ) {
+    // Pantalla de inicio
     object Home : Screens("home", "Inicio", R.drawable.ic_home)
+
+    // Pantalla de detalle
     object Detail : Screens("detail", "Detalle", R.drawable.ic_detail)
 
     companion object {
+        // Lista de todas las pantallas disponibles
         val values = listOf(Home, Detail)
     }
 }
