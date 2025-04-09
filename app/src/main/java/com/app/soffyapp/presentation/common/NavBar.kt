@@ -1,7 +1,12 @@
 package com.app.soffyapp.presentation.common
 
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.app.soffyapp.presentation.navigation.Screens
 
 // presentation/common/components/NavBar.kt
