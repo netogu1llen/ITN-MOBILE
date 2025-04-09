@@ -9,6 +9,7 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
+import androidx.compose.ui.graphics.Color
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -50,7 +51,9 @@ fun AppNavigation() {
     Scaffold(
         bottomBar = {
             // Barra de navegación inferior
-            NavigationBar {
+            NavigationBar(
+                containerColor = Color(0xFFFEA02F) // Aquí aplicamos el color #FEA02F
+            ) {
                 // Itera sobre todas las pantallas definidas
                 Screens.values.forEach { screen ->
                     NavigationBarItem(
