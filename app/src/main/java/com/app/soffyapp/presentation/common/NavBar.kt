@@ -1,8 +1,11 @@
 package com.app.soffyapp.presentation.common
 
+import androidx.compose.runtime.Composable
+import androidx.navigation.NavController
+
 // presentation/common/components/NavBar.kt
 @Composable
-fun BottomNavBar(navController: NavController) {
+fun NavBar(navController: NavController) {
     val items = listOf(
         Screens.Home,
         Screens.Detail
