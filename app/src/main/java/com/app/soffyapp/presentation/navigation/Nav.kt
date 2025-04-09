@@ -1,8 +1,11 @@
 package com.app.soffyapp.presentation.navigation
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
@@ -10,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -53,8 +57,8 @@ fun AppNavigation() {
                         icon = {
                             // Icono del item de navegación
                             Icon(
-                                painter = painterResource(id = screen.iconRes),
-                                contentDescription = screen.route // Accesibilidad
+                                imageVector = screen.icon,
+                                contentDescription = screen.route
                             )
                         },
                         label = { Text(screen.title) }, // Texto del item
@@ -102,13 +106,13 @@ fun AppNavigation() {
 sealed class Screens(
     val route: String,
     val title: String,
-    val iconRes: Int
+    val icon: ImageVector
 ) {
     // Pantalla de inicio
-    object Home : Screens("home", "Inicio", R.drawable.ic_home)
+    object Home : Screens("home", "Inicio", Icons.Default.Home)
 
     // Pantalla de detalle
-    object Detail : Screens("detail", "Detalle", R.drawable.ic_detail)
+    object Detail : Screens("detail", "Detalle", Icons.Default.Info)
 
     companion object {
         // Lista de todas las pantallas disponibles
