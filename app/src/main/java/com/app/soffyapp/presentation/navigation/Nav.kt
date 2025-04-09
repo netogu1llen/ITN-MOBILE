@@ -1,5 +1,8 @@
 package com.app.soffyapp.presentation.navigation
 
+import androidx.compose.runtime.Composable
+import androidx.navigation.compose.rememberNavController
+
 // presentation/navigation/Nav.kt
 @Composable
 fun AppNavigation() {
