@@ -1,5 +1,6 @@
 package com.app.soffyapp.presentation
 
+import android.os.Bundle
 import com.app.soffyapp.presentation.navigation.AppNavigation
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
