@@ -2,6 +2,7 @@ package com.app.soffyapp.presentation.common
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
+import com.app.soffyapp.presentation.navigation.Screens
 
 // presentation/common/components/NavBar.kt
 @Composable
