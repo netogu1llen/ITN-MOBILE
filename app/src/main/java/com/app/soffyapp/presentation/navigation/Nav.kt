@@ -19,8 +19,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.app.soffyapp.R
-import com.app.soffyapp.presentation.screens.detail.DetailScreen
-import com.app.soffyapp.presentation.screens.home.HomeScreen
+import com.app.soffyapp.presentation.screens.detail.components.Component as DetailScreen
+import com.app.soffyapp.presentation.screens.home.components.Component as HomeScreen
 
 /**
  * Componente principal de navegación de la aplicación
