@@ -26,6 +26,7 @@ import androidx.navigation.compose.rememberNavController
 import com.app.soffyapp.R
 import com.app.soffyapp.presentation.screens.detail.components.Component as DetailScreen
 import com.app.soffyapp.presentation.screens.home.components.Component as HomeScreen
+import com.app.soffyapp.presentation.screens.login.components.Component as LoginScreen
 
 /**
  * Componente principal de navegación de la aplicación
@@ -89,10 +90,11 @@ fun AppNavigation() {
         // Host de navegación que contiene las pantallas
         NavHost(
             navController = navController,
-            startDestination = Screens.Home.route, // Pantalla inicial
+            startDestination = Screens.Login.route, // Pantalla inicial
             modifier = Modifier.padding(innerPadding)
         ) {
             // Definición de pantallas/composables
+            composable(Screens.Login.route) { LoginScreen(navController) }
             composable(Screens.Home.route) { HomeScreen(navController) }
             composable(Screens.Detail.route) { DetailScreen(navController) }
         }
@@ -109,8 +111,11 @@ fun AppNavigation() {
 sealed class Screens(
     val route: String,
     val title: String,
-    val icon: ImageVector
+    val icon: ImageVector? = null
 ) {
+    // Pantalla de login
+    object Login : Screens("login", "Iniciar sesión")
+
     // Pantalla de inicio
     object Home : Screens("home", "Inicio", Icons.Default.Home)
 
