@@ -59,9 +59,10 @@ fun AppNavigation() {
                 Screens.values.forEach { screen ->
                     NavigationBarItem(
                         icon = {
-                            // Icono del item de navegación
+                            // Verifica si el icono es null, si lo es, usa un ícono predeterminado
+                            val iconToUse = screen.icon ?: Icons.Default.Home
                             Icon(
-                                imageVector = screen.icon,
+                                imageVector = iconToUse,
                                 contentDescription = screen.route
                             )
                         },
