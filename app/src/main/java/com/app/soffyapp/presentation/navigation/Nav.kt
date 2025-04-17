@@ -51,39 +51,41 @@ fun AppNavigation() {
     // Scaffold es el layout principal que incluye la estructura de la app
     Scaffold(
         bottomBar = {
+            if (currentDestination?.route != Screens.Login.route) {
             // Barra de navegación inferior
-            NavigationBar(
-                containerColor = Color(0xFFFEA02F) // Aquí aplicamos el color #FEA02F
-            ) {
-                // Itera sobre todas las pantallas definidas
-                Screens.values.forEach { screen ->
-                    NavigationBarItem(
-                        icon = {
-                            // Verifica si el icono es null, si lo es, usa un ícono predeterminado
-                            val iconToUse = screen.icon ?: Icons.Default.Home
-                            Icon(
-                                imageVector = iconToUse,
-                                contentDescription = screen.route
-                            )
-                        },
-                        label = { Text(screen.title) }, // Texto del item
-                        selected = currentDestination?.hierarchy?.any {
-                            it.route == screen.route
-                        } == true, // Estado seleccionado
-                        onClick = {
-                            // Navegación con configuración optimizada:
-                            navController.navigate(screen.route) {
-                                // 1. Limpia back stack hasta el inicio
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true // Conserva estado
+                NavigationBar(
+                    containerColor = Color(0xFFFEA02F) // Aquí aplicamos el color #FEA02F
+                ) {
+                    // Itera sobre todas las pantallas definidas
+                    Screens.values.forEach { screen ->
+                        NavigationBarItem(
+                            icon = {
+                                // Verifica si el icono es null, si lo es, usa un ícono predeterminado
+                                val iconToUse = screen.icon ?: Icons.Default.Home
+                                Icon(
+                                    imageVector = iconToUse,
+                                    contentDescription = screen.route
+                                )
+                            },
+                            label = { Text(screen.title) }, // Texto del item
+                            selected = currentDestination?.hierarchy?.any {
+                                it.route == screen.route
+                            } == true, // Estado seleccionado
+                            onClick = {
+                                // Navegación con configuración optimizada:
+                                navController.navigate(screen.route) {
+                                    // 1. Limpia back stack hasta el inicio
+                                    popUpTo(navController.graph.findStartDestination().id) {
+                                        saveState = true // Conserva estado
+                                    }
+                                    // 2. Evita múltiples instancias
+                                    launchSingleTop = true
+                                    // 3. Restaura estado previo si existe
+                                    restoreState = true
                                 }
-                                // 2. Evita múltiples instancias
-                                launchSingleTop = true
-                                // 3. Restaura estado previo si existe
-                                restoreState = true
                             }
-                        }
-                    )
+                        )
+                    }
                 }
             }
         }
