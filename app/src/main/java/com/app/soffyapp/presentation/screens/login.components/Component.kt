@@ -1,10 +1,12 @@
 package com.app.soffyapp.presentation.screens.login.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -23,43 +25,54 @@ import com.app.soffyapp.R
  */
 @Composable
 fun Component(navController: NavController) {
-    // Contenedor principal que ocupa toda la pantalla
     Box(
         modifier = Modifier
-            .fillMaxSize() // Ocupa todo el espacio disponible
+            .fillMaxSize()
     ) {
-        // Fondo de pantalla con imagen
+        // Imagen de fondo principal
         Image(
-            painter = painterResource(id = R.drawable.fondo_login), // Recurso de imagen de fondo
-            contentDescription = null, // Decorativo, no necesita descripción
-            contentScale = ContentScale.Crop, // Escala y recorta la imagen para llenar el espacio
-            modifier = Modifier.fillMaxSize() // La imagen ocupa todo el Box
+            painter = painterResource(id = R.drawable.fondo_login),
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize()
         )
 
-        // Columna para organizar los elementos verticalmente
+        // Imagen decorativa "circulo" centrada detrás del logo
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 55.dp),
+            contentAlignment = Alignment.TopCenter
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.circulo),
+                contentDescription = null,
+                contentScale = ContentScale.Fit,
+                modifier = Modifier
+                    .size(290.dp) // Ajusta tamaño del círculo
+            )
+        }
+
+        // Logo sobre el círculo
         Column(
             modifier = Modifier
-                .fillMaxSize() // Ocupa todo el espacio disponible
-                .padding(top = 80.dp), // Margen superior de 80dp
-            horizontalAlignment = Alignment.CenterHorizontally // Centra los elementos horizontalmente
+                .fillMaxSize()
+                .padding(top = 80.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Box(
+            Image(
+                painter = painterResource(id = R.drawable.soffy),
+                contentDescription = "Logo de la empresa",
                 modifier = Modifier
-                    .fillMaxWidth() // La imagen ocupa el ancho completo del contenedor
-                    .heightIn(min = 100.dp, max = 200.dp) // Restringir la altura entre 100dp y 200dp
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.soffy), // Recurso de imagen del logo
-                    contentDescription = "Logo de la empresa",
-                    modifier = Modifier.fillMaxSize(), // Ocupa todo el espacio del Box
-                    contentScale = ContentScale.Crop // Recorta la imagen si es necesario para llenar el espacio
-                )
-            }
+                    .width(300.dp)
+                    .height(200.dp)
+            )
 
             // ESPACIO RESERVADO PARA FUTUROS ELEMENTOS:
             // - Campos de texto para usuario/contraseña
             // - Botón de inicio de sesión
             // - Opciones de "Olvidé mi contraseña" y "Registrarse"
+
         }
     }
 }
