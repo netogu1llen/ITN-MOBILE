@@ -2,6 +2,11 @@ package com.app.soffyapp.presentation.screens.login.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.draw.clip
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -41,7 +46,7 @@ fun Component(navController: NavController) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 55.dp),
+                .padding(top = 75.dp),
             contentAlignment = Alignment.TopCenter
         ) {
             Image(
@@ -57,7 +62,7 @@ fun Component(navController: NavController) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 80.dp),
+                .padding(top = 100.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
@@ -68,11 +73,19 @@ fun Component(navController: NavController) {
                     .height(200.dp)
             )
 
-            // ESPACIO RESERVADO PARA FUTUROS ELEMENTOS:
-            // - Campos de texto para usuario/contraseña
-            // - Botón de inicio de sesión
-            // - Opciones de "Olvidé mi contraseña" y "Registrarse"
+            Spacer(modifier = Modifier.height(200.dp)) // Espaciado entre logo y botón
 
+            Image(
+                painter = painterResource(id = R.drawable.google),
+                contentDescription = "Iniciar sesión con Google",
+                modifier = Modifier
+                    .width(250.dp)
+                    .height(60.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .clickable {
+                        navController.navigate("home")
+                    }
+            )
         }
     }
 }
