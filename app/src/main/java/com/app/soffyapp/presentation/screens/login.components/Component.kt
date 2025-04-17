@@ -43,14 +43,18 @@ fun Component(navController: NavController) {
                 .padding(top = 80.dp), // Margen superior de 80dp
             horizontalAlignment = Alignment.CenterHorizontally // Centra los elementos horizontalmente
         ) {
-            // Logo de la empresa
-            Image(
-                painter = painterResource(id = R.drawable.soffy), // Recurso de imagen del logo
-                contentDescription = "Logo de la empresa", // Texto alternativo para accesibilidad
+            Box(
                 modifier = Modifier
-                    .width(200.dp) // Ancho fijo
-                    .height(100.dp) // Alto fijo (mantiene relación de aspecto)
-            )
+                    .fillMaxWidth() // La imagen ocupa el ancho completo del contenedor
+                    .heightIn(min = 100.dp, max = 200.dp) // Restringir la altura entre 100dp y 200dp
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.soffy), // Recurso de imagen del logo
+                    contentDescription = "Logo de la empresa",
+                    modifier = Modifier.fillMaxSize(), // Ocupa todo el espacio del Box
+                    contentScale = ContentScale.Crop // Recorta la imagen si es necesario para llenar el espacio
+                )
+            }
 
             // ESPACIO RESERVADO PARA FUTUROS ELEMENTOS:
             // - Campos de texto para usuario/contraseña
