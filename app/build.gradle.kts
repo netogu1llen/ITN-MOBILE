@@ -42,8 +42,8 @@ dependencies {
     // Core Android
     implementation(libs.androidx.core.ktx)
     implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.core:core-ktx:1.12.0")
+    implementation("com.google.android.material:material:1.11.0")
 
     // Jetpack Compose
     implementation(platform(libs.androidx.compose.bom))
