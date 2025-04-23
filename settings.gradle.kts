@@ -19,6 +19,13 @@ dependencyResolutionManagement {
     }
 }
 
+dependencyResolutionManagement {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
 rootProject.name = "SoffyApp"
 include(":app")
  
