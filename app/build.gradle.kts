@@ -61,6 +61,9 @@ dependencies {
     // Cliente de Google Play Services
     implementation("com.google.android.gms:play-services-auth:21.0.0")
 
+    // DataStore Preferences
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
+
     // Hilt
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
