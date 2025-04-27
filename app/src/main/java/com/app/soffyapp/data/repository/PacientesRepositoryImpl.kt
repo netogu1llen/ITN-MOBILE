@@ -13,10 +13,12 @@ class PacientesRepositoryImpl @Inject constructor(
 ) : PacientesRepository {
 
     override suspend fun getPacientesList(): List<Paciente> {
-        return api.getPacientesList().pacientes.map { it.toPaciente() }
+        val response = api.getPacientesList()
+        return response.results.map { it.toPaciente() }
     }
 
     override suspend fun getPacienteById(id: String): Paciente {
-        return api.getPaciente(id).toPaciente()
+        val response = api.getPaciente(id)
+        return response.toPaciente()
     }
 }
