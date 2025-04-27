@@ -34,10 +34,10 @@ fun PacientesListContent(
             val query = searchQuery.trim().lowercase()
 
             pacientesList.filter { paciente ->
-                val nombre = paciente.nombreCompleto.lowercase()
+                val nombreCompleto = "${paciente.nombre} ${paciente.apellidoPaterno} ${paciente.apellidoMaterno}".lowercase()
                 val fechaFormateada = paciente.fechaNacimiento.formatearFecha().lowercase()
 
-                nombre.contains(query) || fechaFormateada.contains(query)
+                nombreCompleto.contains(query) || fechaFormateada.contains(query)
             }
         }
 

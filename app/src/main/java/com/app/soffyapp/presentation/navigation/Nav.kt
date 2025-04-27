@@ -18,12 +18,15 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.app.soffyapp.presentation.screens.pacientes.PacientesScreen
 import com.app.soffyapp.presentation.screens.detail.components.Component as DetailScreen
 import com.app.soffyapp.presentation.screens.home.components.Component as HomeScreen
+import com.app.soffyapp.presentation.screens.pacientes.components.PacienteDetailScreen
 
 /**
  * Componente principal de navegación de la aplicación
@@ -86,26 +89,39 @@ fun AppNavigation() {
             }
         },
     ) { innerPadding ->
-        // Host de navegación que contiene las pantallas
         NavHost(
             navController = navController,
-            startDestination = Screens.Home.route, // Pantalla inicial
+            startDestination = Screens.Home.route,
             modifier = Modifier.padding(innerPadding),
         ) {
-            // Definición de pantallas/composables
             composable(Screens.Home.route) { HomeScreen(navController) }
             composable(Screens.Detail.route) { DetailScreen(navController) }
+
             composable(Screens.Pacientes.route) {
                 PacientesScreen(
+                    navController = navController,
                     onPacienteClick = { pacienteId ->
-                        // Navega a detalle si lo necesitas
-                        navController.navigate("${Screens.Detail.route}/$pacienteId")
+                        navController.navigate("detallePaciente/$pacienteId")
                     },
+                )
+            }
+
+            composable(
+                route = "detallePaciente/{pacienteId}",
+                arguments = listOf(navArgument("pacienteId") { type = NavType.IntType })
+            ) { backStackEntry ->
+                val pacienteId = backStackEntry.arguments?.getInt("pacienteId") ?: -1
+                PacienteDetailScreen(
+                    pacienteId = pacienteId,
+                    navController = navController
                 )
             }
         }
     }
 }
+
+
+
 
 /**
  * Clase sellada que define las pantallas de la aplicación

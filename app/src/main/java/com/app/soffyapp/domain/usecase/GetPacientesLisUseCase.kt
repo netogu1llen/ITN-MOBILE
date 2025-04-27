@@ -1,5 +1,6 @@
 package com.app.soffyapp.domain.usecase
 
+import com.app.soffyapp.data.mapper.toPaciente
 import com.app.soffyapp.domain.model.Paciente
 import com.app.soffyapp.domain.repository.PacientesRepository
 import com.app.soffyapp.presentation.common.Result
@@ -19,6 +20,8 @@ class GetPacientesListUseCase
                 try {
                     // Primer valor: Loading
                     emit(Result.Loading)
+
+                    val pacientesEntityList = repository.getPacientesList()
 
                     // Obtiene datos
                     val pacientesList = repository.getPacientesList()

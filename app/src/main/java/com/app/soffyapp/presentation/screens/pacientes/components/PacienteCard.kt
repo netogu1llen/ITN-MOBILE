@@ -58,8 +58,9 @@ fun PacienteCard(
             // Datos del paciente
             Column {
                 Text(
-                    text = paciente.nombreCompleto,
-                    style = MaterialTheme.typography.titleMedium,
+                    text = "${paciente.nombre} ${paciente.apellidoPaterno} ${paciente.apellidoMaterno}",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onBackground
                 )
                 Text(
                     text = "Fecha de nacimiento: ${paciente.fechaNacimiento.formatearFecha()}",

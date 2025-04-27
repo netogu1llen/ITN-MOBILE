@@ -15,12 +15,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import com.app.soffyapp.presentation.screens.pacientes.components.PacientesListContent
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Suppress("ktlint:standard:function-naming")
 @Composable
 fun PacientesScreen(
+    navController: NavController,
     onPacienteClick: (Int) -> Unit,
     viewModel: PacientesViewModel = hiltViewModel(),
 ) {
@@ -45,7 +47,9 @@ fun PacientesScreen(
                 error = uiState.error,
                 searchQuery = searchQuery,
                 onSearchQueryChange = { searchQuery = it },
-                onPacienteClick = onPacienteClick,
+                onPacienteClick = { pacienteId ->
+                    onPacienteClick(pacienteId)
+                },
             )
         }
     }
