@@ -30,8 +30,8 @@ fun SearchBar(
                 .padding(horizontal = 16.dp)
                 .clip(RoundedCornerShape(50.dp)),
         // Bordes redondeados
-        placeholder = { Text("Buscar paciente") }, // Como en la imagen
-        trailingIcon = { Icon(Icons.Default.Search, contentDescription = null) }, // Ícono al final
+        placeholder = { Text("Buscar paciente") },
+        trailingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
         singleLine = true,
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
         shape = RoundedCornerShape(50.dp),
