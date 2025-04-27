@@ -1,11 +1,6 @@
-package com.app.soffyapp.data.local.entity
+package com.app.soffyapp.data.remote.dto
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-
-@Entity(tableName = "pacientes")
-data class PacienteEntity(
-    @PrimaryKey
+data class PacienteDto(
     val idExpediente: Int,
     val nombre: String,
     val apellidoPaterno: String,

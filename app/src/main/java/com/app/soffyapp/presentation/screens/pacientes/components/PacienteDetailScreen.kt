@@ -7,19 +7,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.app.soffyapp.presentation.screens.pacientes.PacienteDetailViewModel
+import com.app.soffyapp.presentation.screens.pacientes.PacientesDetailViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PacienteDetailScreen(
     pacienteId: Int,
     navController: NavController,
-    viewModel: PacienteDetailViewModel = hiltViewModel()
+    viewModel: PacientesDetailViewModel = hiltViewModel() // ✅ Clase correcta
 ) {
     val paciente by viewModel.paciente.collectAsState()
 
     LaunchedEffect(pacienteId) {
-        viewModel.cargarPacientePorId(pacienteId)
+        viewModel.cargarPacientePorId(pacienteId.toString()) // ✅ pacienteId a String
     }
 
     Column(
