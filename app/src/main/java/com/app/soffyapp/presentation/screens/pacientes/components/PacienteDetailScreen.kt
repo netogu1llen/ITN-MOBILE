@@ -3,6 +3,7 @@ package com.app.soffyapp.presentation.screens.pacientes.components
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -14,62 +15,75 @@ import com.app.soffyapp.presentation.screens.pacientes.PacientesDetailViewModel
 fun PacienteDetailScreen(
     pacienteId: Int,
     navController: NavController,
-    viewModel: PacientesDetailViewModel = hiltViewModel() // ✅ Clase correcta
+    viewModel: PacientesDetailViewModel = hiltViewModel()
 ) {
     val paciente by viewModel.paciente.collectAsState()
 
     LaunchedEffect(pacienteId) {
-        viewModel.cargarPacientePorId(pacienteId.toString()) // ✅ pacienteId a String
+        viewModel.cargarPacientePorId(pacienteId.toString())
     }
 
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        Text(
-            text = "Detalle del Paciente",
-            style = MaterialTheme.typography.headlineMedium,
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
+        when {
+            paciente == null -> {
+                CircularProgressIndicator(
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
+            else -> {
+                Column(
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    Text(
+                        text = "Detalle del Paciente",
+                        style = MaterialTheme.typography.headlineMedium,
+                        modifier = Modifier.padding(bottom = 16.dp)
+                    )
 
-        paciente?.let {
-            SectionTitle(title = "Datos Personales")
+                    paciente?.let {
+                        SectionTitle(title = "Datos Personales")
 
-            DisabledTextField(label = "Nombre", value = it.nombre)
-            DisabledTextField(label = "Apellido Paterno", value = it.apellidoPaterno)
-            DisabledTextField(label = "Apellido Materno", value = it.apellidoMaterno)
-            DisabledTextField(label = "Fecha de Nacimiento", value = it.fechaNacimiento)
-            DisabledTextField(label = "Teléfono", value = it.telefono)
+                        DisabledTextField(label = "Nombre", value = it.nombre)
+                        DisabledTextField(label = "Apellido Paterno", value = it.apellidoPaterno)
+                        DisabledTextField(label = "Apellido Materno", value = it.apellidoMaterno)
+                        DisabledTextField(label = "Fecha de Nacimiento", value = it.fechaNacimiento)
+                        DisabledTextField(label = "Teléfono", value = it.telefono)
 
-            SectionTitle(title = "Dirección de Vivienda")
+                        SectionTitle(title = "Dirección de Vivienda")
 
-            DisabledTextField(label = "Estado", value = it.estado)
-            DisabledTextField(label = "Ciudad", value = it.ciudad)
-            DisabledTextField(label = "Calle", value = it.calle)
-            DisabledTextField(label = "Código Postal", value = it.codigoPostal)
-            DisabledTextField(label = "Localidad", value = it.localidad)
-            DisabledTextField(label = "Número de Casa", value = it.numeroCasa)
+                        DisabledTextField(label = "Estado", value = it.estado)
+                        DisabledTextField(label = "Ciudad", value = it.ciudad)
+                        DisabledTextField(label = "Calle", value = it.calle)
+                        DisabledTextField(label = "Código Postal", value = it.codigoPostal)
+                        DisabledTextField(label = "Localidad", value = it.localidad)
+                        DisabledTextField(label = "Número de Casa", value = it.numeroCasa)
 
-            SectionTitle(title = "Datos Médicos")
+                        SectionTitle(title = "Datos Médicos")
 
-            DisabledTextField(label = "Enfermedades", value = it.enfermedades)
-            DisabledTextField(label = "Medicamentos", value = it.medicamentos)
-            DisabledTextField(label = "Tipo de Sangre", value = it.tipoSangre)
+                        DisabledTextField(label = "Enfermedades", value = it.enfermedades)
+                        DisabledTextField(label = "Medicamentos", value = it.medicamentos)
+                        DisabledTextField(label = "Tipo de Sangre", value = it.tipoSangre)
 
-            SectionTitle(title = "Datos Académicos")
+                        SectionTitle(title = "Datos Académicos")
 
-            DisabledTextField(label = "Estudio Socioeconómico", value = it.estudioSocioeconomico)
-            DisabledTextField(label = "Grado", value = it.grado)
-            DisabledTextField(label = "Nivel Escolar", value = it.nivelEscolar)
+                        DisabledTextField(label = "Estudio Socioeconómico", value = it.estudioSocioeconomico)
+                        DisabledTextField(label = "Grado", value = it.grado)
+                        DisabledTextField(label = "Nivel Escolar", value = it.nivelEscolar)
 
-            Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(16.dp))
 
-            Button(
-                onClick = { navController.popBackStack() },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(text = "Regresar")
+                        Button(
+                            onClick = { navController.popBackStack() },
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(text = "Regresar")
+                        }
+                    }
+                }
             }
         }
     }
