@@ -4,7 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     kotlin("kapt")
     alias(libs.plugins.hilt)
-    id("com.google.gms.google-services")
+    // Se eliminó la referencia a google-services.json
 }
 
 android {
@@ -75,4 +75,11 @@ dependencies {
 
     // Coil
     implementation(libs.coil.compose)
+
+    // Kotlin Coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+
+    // IMPORTANTE: Esta dependencia contiene el paquete kotlinx.coroutines.tasks
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
 }
