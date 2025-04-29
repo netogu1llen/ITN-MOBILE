@@ -1,14 +1,17 @@
 package com.app.soffyapp.presentation.screens.login
 
-import android.content.Context
+import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.soffyapp.data.local.TokenDataStore
-import com.app.soffyapp.network.api.enviarTokenGoogleAlBackend
-import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.app.soffyapp.data.remote.auth.GoogleAuthClient
+import com.app.soffyapp.domain.usecase.GoogleLoginUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 /**
  * Representa los posibles estados de la UI durante el login
@@ -27,15 +30,20 @@ sealed class LoginUiState {
 }
 
 /**
- * ViewModel para manejar la lógica de autenticación
+ * ViewModel para manejar la lógica de autenticación usando Hilt
  *
  * Responsabilidades:
  * - Gestionar el estado del login
- * - Comunicarse con Google Sign-In
- * - Interactuar con el backend
- * - Almacenar el token JWT recibido
+ * - Comunicarse con Google Sign-In a través del GoogleAuthClient
+ * - Interactuar con el backend a través del GoogleLoginUseCase
+ * - Almacenar el token JWT recibido a través del TokenDataStore
  */
-class LoginViewModel : ViewModel() {
+@HiltViewModel
+class LoginViewModel @Inject constructor(
+    private val googleLoginUseCase: GoogleLoginUseCase,
+    private val tokenDataStore: TokenDataStore,
+    private val googleAuthClient: GoogleAuthClient
+) : ViewModel() {
 
     // Flujo mutable para el estado (privado)
     private val _uiState = MutableStateFlow<LoginUiState>(LoginUiState.Idle)
@@ -43,49 +51,52 @@ class LoginViewModel : ViewModel() {
     val uiState: StateFlow<LoginUiState> = _uiState
 
     /**
-     * Inicia el proceso de login con Google
-     * @param context Contexto de Android necesario para Google Sign-In
+     * Obtiene el Intent para iniciar el flujo de Google Sign-In
+     * @return Intent para iniciar el flujo de autenticación
      */
-    fun iniciarSesionConGoogle(context: Context) {
-        // Actualiza estado a Loading
+    fun getGoogleSignInIntent(): Intent {
+        return googleAuthClient.getSignInIntent()
+    }
+
+    /**
+     * Procesa el resultado de la autenticación con Google
+     * @param data Intent con los datos de resultado de la autenticación
+     */
+    fun handleGoogleSignInResult(data: Intent?) {
         _uiState.value = LoginUiState.Loading
 
         viewModelScope.launch {
-            // 1. Obtener cuenta de Google previamente autenticada
-            val cuenta = GoogleSignIn.getLastSignedInAccount(context)
-            val idToken = cuenta?.idToken
+            try {
+                // 1. Extraer el token ID de Google
+                val idToken = extractGoogleIdToken(data)
+                    ?: throw Exception("No se pudo obtener el ID Token de Google")
 
-            // 2. Verificar si se obtuvo token
-            if (idToken == null) {
-                _uiState.value = LoginUiState.Error("No se pudo obtener el ID Token de Google")
-                return@launch
-            }
-
-            // 3. Enviar token al backend y obtener JWT
-            val jwt = enviarTokenGoogleAlBackend(idToken)
-
-            // 4. Manejar respuesta del backend
-            if (jwt != null) {
-                // Almacenar token localmente
-                TokenDataStore.guardarToken(context, jwt)
-                _uiState.value = LoginUiState.Success("Sesión iniciada correctamente")
-            } else {
-                _uiState.value = LoginUiState.Error("Error al autenticar con el servidor")
+                // 2. Usar el caso de uso para autenticar con el backend
+                googleLoginUseCase(idToken).collect { result ->
+                    result.onSuccess { authToken ->
+                        // 3. Guardar el token recibido
+                        tokenDataStore.saveToken(authToken.token)
+                        _uiState.value = LoginUiState.Success("Sesión iniciada correctamente")
+                    }.onFailure { exception ->
+                        _uiState.value = LoginUiState.Error("Error: ${exception.message}")
+                    }
+                }
+            } catch (e: Exception) {
+                _uiState.value = LoginUiState.Error("Error: ${e.message}")
             }
         }
     }
 
     /**
-     * Envía el token de Google al backend y obtiene el JWT de la app
-     * @param idToken Token de Google obtenido del cliente
-     * @return JWT proporcionado por el backend o null si falla
+     * Extrae el token ID de Google del intent de resultado
+     * @param data Intent con los datos de resultado
+     * @return Token ID o null si no se pudo obtener
      */
-    private suspend fun enviarTokenGoogleAlBackend(idToken: String): String? {
-        // Implementación real haría una llamada HTTP al backend
+    private suspend fun extractGoogleIdToken(data: Intent?): String? {
         return try {
-            // Ejemplo simulado:
-            val response = apiService.loginWithGoogle(idToken)
-            response.token
+            val task = com.google.android.gms.auth.api.signin.GoogleSignIn
+                .getSignedInAccountFromIntent(data)
+            task.await().idToken
         } catch (e: Exception) {
             null
         }
