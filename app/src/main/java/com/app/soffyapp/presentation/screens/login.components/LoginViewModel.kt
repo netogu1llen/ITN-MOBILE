@@ -1,42 +1,30 @@
 package com.app.soffyapp.presentation.screens.login
 
 import android.content.Intent
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.soffyapp.data.local.TokenDataStore
 import com.app.soffyapp.data.remote.auth.GoogleAuthClient
 import com.app.soffyapp.domain.usecase.GoogleLoginUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
- * Representa los posibles estados de la UI durante el login
- *
- * Patrón sealed class que encapsula todos los estados posibles:
- * - Idle: Estado inicial/inactivo
- * - Loading: Cuando se está procesando el login
- * - Success: Cuando el login es exitoso (contiene mensaje)
- * - Error: Cuando ocurre un error (contiene mensaje de error)
+ * Estados posibles de la UI durante el login
  */
 sealed class LoginUiState {
-    object Idle : LoginUiState()          // Estado inicial/inactivo
-    object Loading : LoginUiState()       // Login en progreso
-    data class Success(val message: String) : LoginUiState()  // Login exitoso
-    data class Error(val message: String) : LoginUiState()    // Error en login
+    object Idle : LoginUiState()
+    object Loading : LoginUiState()
+    data class Success(val message: String) : LoginUiState()
+    data class Error(val message: String) : LoginUiState()
 }
 
 /**
- * ViewModel para manejar la lógica de autenticación usando Hilt
- *
- * Responsabilidades:
- * - Gestionar el estado del login
- * - Comunicarse con Google Sign-In a través del GoogleAuthClient
- * - Interactuar con el backend a través del GoogleLoginUseCase
- * - Almacenar el token JWT recibido a través del TokenDataStore
+ * ViewModel para manejar la lógica de autenticación
  */
 @HiltViewModel
 class LoginViewModel @Inject constructor(
@@ -44,15 +32,14 @@ class LoginViewModel @Inject constructor(
     private val tokenDataStore: TokenDataStore,
     private val googleAuthClient: GoogleAuthClient
 ) : ViewModel() {
+    private val TAG = "LoginViewModel"
 
-    // Flujo mutable para el estado (privado)
+    // Estado de la UI
     private val _uiState = MutableStateFlow<LoginUiState>(LoginUiState.Idle)
-    // Flujo público de solo lectura para observar el estado
     val uiState: StateFlow<LoginUiState> = _uiState
 
     /**
      * Obtiene el Intent para iniciar el flujo de Google Sign-In
-     * @return Intent para iniciar el flujo de autenticación
      */
     fun getGoogleSignInIntent(): Intent {
         return googleAuthClient.getSignInIntent()
@@ -63,42 +50,44 @@ class LoginViewModel @Inject constructor(
      * @param data Intent con los datos de resultado de la autenticación
      */
     fun handleGoogleSignInResult(data: Intent?) {
+        // Actualizar estado a Loading
         _uiState.value = LoginUiState.Loading
+        Log.d(TAG, "Procesando resultado de Sign-In con Google")
 
         viewModelScope.launch {
             try {
-                // 1. Extraer el token ID de Google
-                val idToken = extractGoogleIdToken(data)
-                    ?: throw Exception("No se pudo obtener el ID Token de Google")
+                // 1. Procesar el resultado para obtener el token ID
+                val idTokenResult = googleAuthClient.handleSignInResult(data)
 
-                // 2. Usar el caso de uso para autenticar con el backend
-                googleLoginUseCase(idToken).collect { result ->
-                    result.onSuccess { authToken ->
-                        // 3. Guardar el token recibido
-                        tokenDataStore.saveToken(authToken.token)
-                        _uiState.value = LoginUiState.Success("Sesión iniciada correctamente")
-                    }.onFailure { exception ->
+                idTokenResult.fold(
+                    onSuccess = { idToken ->
+                        Log.d(TAG, "Token ID obtenido, autenticando con backend")
+
+                        // 2. Autenticar con el backend usando el token
+                        googleLoginUseCase(idToken).collect { result ->
+                            result.onSuccess { authToken ->
+                                // 3. Guardar el token JWT recibido
+                                tokenDataStore.saveToken(authToken.token)
+                                Log.d(TAG, "Autenticación exitosa, token JWT guardado")
+                                _uiState.value = LoginUiState.Success("Sesión iniciada correctamente")
+                            }.onFailure { exception ->
+                                // Error en la autenticación con el backend
+                                Log.e(TAG, "Error en backend: ${exception.message}")
+                                _uiState.value = LoginUiState.Error("Error: ${exception.message}")
+                            }
+                        }
+                    },
+                    onFailure = { exception ->
+                        // Error al obtener el token ID de Google
+                        Log.e(TAG, "Error al obtener token ID: ${exception.message}")
                         _uiState.value = LoginUiState.Error("Error: ${exception.message}")
                     }
-                }
+                )
             } catch (e: Exception) {
-                _uiState.value = LoginUiState.Error("Error: ${e.message}")
+                // Error inesperado
+                Log.e(TAG, "Error inesperado: ${e.message}", e)
+                _uiState.value = LoginUiState.Error("Error inesperado: ${e.message}")
             }
-        }
-    }
-
-    /**
-     * Extrae el token ID de Google del intent de resultado
-     * @param data Intent con los datos de resultado
-     * @return Token ID o null si no se pudo obtener
-     */
-    private suspend fun extractGoogleIdToken(data: Intent?): String? {
-        return try {
-            val task = com.google.android.gms.auth.api.signin.GoogleSignIn
-                .getSignedInAccountFromIntent(data)
-            task.await().idToken
-        } catch (e: Exception) {
-            null
         }
     }
 }
