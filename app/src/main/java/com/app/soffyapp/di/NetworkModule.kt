@@ -33,7 +33,7 @@ object NetworkModule {
     @Singleton
     fun provideRetrofit(): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("https://api.tudominio.com/") // TODO: Replace with actual base URL
+            .baseUrl("http://localhost:3000/") // TODO: Replace with actual base URL
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
