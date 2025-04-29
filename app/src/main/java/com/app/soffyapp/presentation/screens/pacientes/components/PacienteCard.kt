@@ -57,23 +57,12 @@ fun PacienteCard(
 
             // Datos del paciente
             Column {
-                val nombreCompleto = listOf(
-                    paciente.nombre,
-                    paciente.apellidoPaterno,
-                    paciente.apellidoMaterno
-                ).filter { it.isNotBlank() }
-                    .joinToString(" ")
-
                 Text(
-                    text = if (nombreCompleto.isNotBlank()) nombreCompleto else "Nombre no disponible",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onBackground
+                    text = paciente.nombreCompleto,
+                    style = MaterialTheme.typography.titleMedium,
                 )
-
-                val fechaFormateada = paciente.fechaNacimiento.formatearFecha()
-
                 Text(
-                    text = if (fechaFormateada.isNotBlank()) "Fecha de nacimiento: $fechaFormateada" else "Fecha de nacimiento: No disponible",
+                    text = "Fecha de nacimiento: ${paciente.fechaNacimiento.formatearFecha()}",
                     style = MaterialTheme.typography.bodySmall,
                     color = Color.Gray,
                 )
@@ -91,6 +80,6 @@ fun String.formatearFecha(): String {
         val formatter = DateTimeFormatter.ofPattern("MMMM dd 'de' yyyy", Locale("es"))
         LocalDate.parse(this, parser).format(formatter)
     } catch (e: Exception) {
-        "" // por si viene mal, se deja igual
+        this // por si viene mal, se deja igual
     }
 }

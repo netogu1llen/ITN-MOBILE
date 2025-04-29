@@ -2,21 +2,26 @@ package com.app.soffyapp.domain.model
 
 data class Paciente(
     val idExpediente: Int,
-    val nombre: String,
-    val apellidoPaterno: String,
-    val apellidoMaterno: String,
+    val nombreCompleto: String,
     val fechaNacimiento: String,
-    val telefono: String,
-    val estado: String,
-    val ciudad: String,
-    val calle: String,
-    val codigoPostal: String,
-    val localidad: String,
-    val numeroCasa: String,
-    val enfermedades: String,
-    val medicamentos: String,
-    val estudioSocioeconomico: String,
-    val tipoSangre: String,
-    val grado: String,
-    val nivelEscolar: String
-)
+    val nvEscolar: String,
+) {
+    companion object {
+        fun getMockData(): List<Paciente> =
+            listOf(
+                Paciente(
+                    idExpediente = 1,
+                    nombreCompleto = "Juan Perez Gomez",
+                    fechaNacimiento = "2005-08-15",
+                    nvEscolar = "Secundaria",
+                ),
+                Paciente(
+                    idExpediente = 2,
+                    nombreCompleto = "Ana Ruiz Sanchez",
+                    fechaNacimiento = "2006-11-20",
+                    nvEscolar = "Secundaria",
+                ),
+                // Puedes agregar más si necesitas
+            )
+    }
+}
