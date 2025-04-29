@@ -4,61 +4,48 @@ import android.content.Context
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-/**
- * Delegado para crear/obtener el DataStore de preferencias
- *
- * Define un DataStore con nombre "auth" para almacenar datos de autenticación.
- * Se accede a través de la propiedad de extensión `dataStore` en cualquier Context.
- */
-val Context.dataStore by preferencesDataStore(name = "auth")
+import javax.inject.Inject
+import javax.inject.Singleton
+
+// Extension para DataStore
+private val Context.dataStore by preferencesDataStore(name = "user_preferences")
 
 /**
- * Objeto singleton para manejar operaciones con el token JWT
- *
- * Proporciona operaciones seguras para:
- * - Guardar el token después del login
- * - Obtener el token actual
- * - Eliminar el token durante logout
- *
- * Usa Preferences DataStore (recomendado por Google para datos simples)
+ * Almacena y gestiona el token JWT usando DataStore
  */
-object TokenDataStore {
-
-    // Clave para almacenar el token JWT en las preferencias
-    private val JWT_KEY = stringPreferencesKey("jwt_token")
+@Singleton
+class TokenDataStore @Inject constructor(
+    @ApplicationContext private val context: Context
+) {
+    private val tokenKey = stringPreferencesKey("auth_token")
 
     /**
-     * Guarda el token JWT en el DataStore
-     * @param context Contexto de la aplicación
-     * @param token Token JWT a almacenar
+     * Guarda el token JWT en DataStore
+     * @param token Token JWT a guardar
      */
-    suspend fun guardarToken(context: Context, token: String) {
-        context.dataStore.edit { prefs -> // Operación suspendida de escritura
-            prefs[JWT_KEY] = token // Asigna el valor al DataStore
+    suspend fun saveToken(token: String) {
+        context.dataStore.edit { preferences ->
+            preferences[tokenKey] = token
         }
     }
 
     /**
-     * Obtiene el token almacenado como un Flow
-     * @param context Contexto de la aplicación
-     * @return Flow que emite el token cuando está disponible (o null)
+     * Obtiene el token JWT guardado
+     * @return Flow con el token o null si no existe
      */
-    fun obtenerToken(context: Context): Flow<String?> {
-        return context.dataStore.data // Flow del DataStore
-            .map { prefs -> // Transforma las preferencias al token
-                prefs[JWT_KEY]
-            }
+    fun getToken(): Flow<String?> = context.dataStore.data.map { preferences ->
+        preferences[tokenKey]
     }
 
     /**
-     * Elimina el token almacenado (para logout)
-     * @param context Contexto de la aplicación
+     * Elimina el token guardado (logout)
      */
-    suspend fun borrarToken(context: Context) {
-        context.dataStore.edit { prefs -> // Operación suspendida de escritura
-            prefs.remove(JWT_KEY) // Elimina la clave del DataStore
+    suspend fun clearToken() {
+        context.dataStore.edit { preferences ->
+            preferences.remove(tokenKey)
         }
     }
 }
