@@ -108,7 +108,10 @@ fun AppNavigation() {
                 route = "expediente/{id}",
             ) { backStackEntry ->
                 val pacienteId = backStackEntry.arguments?.getString("id")?.toIntOrNull() ?: return@composable
-                ExpedienteScreen(pacienteId = pacienteId)
+                ExpedienteScreen(
+                    pacienteId = pacienteId,
+                    navController = navController
+                )
             }
         }
     }
