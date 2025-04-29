@@ -26,7 +26,7 @@ import androidx.navigation.compose.rememberNavController
 import com.app.soffyapp.R
 import com.app.soffyapp.presentation.screens.detail.components.Component as DetailScreen
 import com.app.soffyapp.presentation.screens.home.components.Component as HomeScreen
-import com.app.soffyapp.presentation.screens.login.components.Component as LoginScreen
+import com.app.soffyapp.presentation.screens.login.components.LoginScreen
 
 /**
  * Componente principal de navegación de la aplicación
