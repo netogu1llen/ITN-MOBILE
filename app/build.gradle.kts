@@ -44,6 +44,7 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.core:core-ktx:1.12.0")
+    implementation("com.google.android.material:material:1.11.0")
 
     // Jetpack Compose
     implementation(platform(libs.androidx.compose.bom))
@@ -68,4 +69,8 @@ dependencies {
 
     // Coil
     implementation(libs.coil.compose)
+
+    implementation("androidx.room:room-runtime:2.6.1")
+    kapt("androidx.room:room-compiler:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
 }
