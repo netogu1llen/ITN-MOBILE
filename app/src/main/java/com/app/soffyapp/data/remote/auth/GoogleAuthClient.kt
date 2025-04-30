@@ -10,7 +10,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.common.api.Scope
+import com.google.android.material.R.integer
 import kotlinx.coroutines.tasks.await
 import java.security.MessageDigest
 import javax.inject.Inject
@@ -18,6 +18,7 @@ import javax.inject.Singleton
 
 /**
  * Cliente para manejar la autenticación con Google
+ * Con mejoras para solucionar problemas de DEVELOPER_ERROR
  */
 @Singleton
 class GoogleAuthClient @Inject constructor(
@@ -28,6 +29,9 @@ class GoogleAuthClient @Inject constructor(
     // Obtiene el client ID de los recursos
     private val clientId = context.getString(R.string.google_cloud_client_id)
 
+    // Variante con prefijo oauth2: (puede resolver algunos problemas de DEVELOPER_ERROR)
+    private val clientIdWithPrefix = "oauth2:$clientId"
+
     // Métodos alternativos de configuración
     private val gsoAlternative1 = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
         .requestEmail()
@@ -35,9 +39,16 @@ class GoogleAuthClient @Inject constructor(
         .build()
 
     private val gsoAlternative2 = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        .requestIdToken(clientIdWithPrefix) // Usar variante con prefijo
+        .requestEmail()
+        .requestProfile()
+        .build()
+
+    private val gsoAlternative3 = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
         .requestIdToken(clientId)
         .requestEmail()
         .requestProfile()
+        .requestServerAuthCode(clientId) // Agregar solicitud de código de autorización
         .build()
 
     // Configuración principal (original)
@@ -51,11 +62,18 @@ class GoogleAuthClient @Inject constructor(
 
     // Variable para rastrear qué configuración estamos usando
     private var currentConfigIndex = 0
-    private val CONFIGS = 3
+    private val CONFIGS = 4 // Ahora tenemos 4 configuraciones
 
     init {
         // Verificar la configuración cuando se inicializa el cliente
         verifyConfiguration()
+
+        // Intenta revocar accesos previos al inicializar para evitar problemas de caché
+        try {
+            googleSignInClient.revokeAccess()
+        } catch (e: Exception) {
+            Log.d(TAG, "No se pudo revocar accesos previos: ${e.message}")
+        }
     }
 
     /**
@@ -67,9 +85,11 @@ class GoogleAuthClient @Inject constructor(
             Log.d(TAG, "Client ID configurado: $clientId")
             Log.d(TAG, "Nombre del paquete: ${context.packageName}")
 
-            // Obtener y mostrar las huellas SHA-1 de la aplicación
+            // Obtener y mostrar las huellas SHA-1 y SHA-256 de la aplicación
             val sha1 = getAppSignatureSHA1()
+            val sha256 = getAppSignatureSHA256()
             Log.d(TAG, "Huella SHA-1 de la aplicación: $sha1")
+            Log.d(TAG, "Huella SHA-256 de la aplicación: $sha256")
 
             // Verificar disponibilidad de Google Play Services
             val googleApiAvailability = GoogleApiAvailability.getInstance()
@@ -80,6 +100,15 @@ class GoogleAuthClient @Inject constructor(
                 Log.e(TAG, "Error de Google Play Services: $errorString")
             } else {
                 Log.d(TAG, "Google Play Services está disponible correctamente")
+            }
+
+            // Verificar si tenemos una cuenta activa ya
+            val account = GoogleSignIn.getLastSignedInAccount(context)
+            if (account != null) {
+                Log.d(TAG, "Cuenta activa encontrada: ${account.email}")
+                Log.d(TAG, "Tiene token ID: ${account.idToken != null}")
+            } else {
+                Log.d(TAG, "No hay cuentas activas de Google Sign-In")
             }
 
             Log.d(TAG, "====== FIN DE VERIFICACIÓN ======")
@@ -101,18 +130,9 @@ class GoogleAuthClient @Inject constructor(
             val signatures = packageInfo.signatures
             val signatureBytes = signatures?.get(0)?.toByteArray()
             if (signatureBytes != null && signatureBytes.isNotEmpty()) {
-                val signature = signatures[0].toCharsString()
                 val md = MessageDigest.getInstance("SHA-1")
-                md.update(signature.toByteArray())
-                val digest = md.digest()
-                val hexString = StringBuilder()
-                for (i in digest.indices) {
-                    if (i > 0) hexString.append(":")
-                    val hex = Integer.toHexString(0xff and digest[i].toInt())
-                    if (hex.length == 1) hexString.append("0")
-                    hexString.append(hex.uppercase())
-                }
-                return hexString.toString()
+                val digest = md.digest(signatureBytes)
+                return bytesToHexString(digest)
             }
         } catch (e: Exception) {
             Log.e(TAG, "Error al obtener la huella SHA-1: ${e.message}")
@@ -121,9 +141,46 @@ class GoogleAuthClient @Inject constructor(
     }
 
     /**
-     * Cambia a la siguiente configuración de autenticación
+     * Obtiene la huella SHA-256 de la aplicación (algunas APIs de Google ahora prefieren SHA-256)
      */
-    fun switchToNextConfig() {
+    private fun getAppSignatureSHA256(): String {
+        try {
+            val packageInfo = context.packageManager.getPackageInfo(
+                context.packageName,
+                PackageManager.GET_SIGNATURES
+            )
+            val signatures = packageInfo.signatures
+            val signatureBytes = signatures?.get(0)?.toByteArray()
+            if (signatureBytes != null && signatureBytes.isNotEmpty()) {
+                val md = MessageDigest.getInstance("SHA-256")
+                val digest = md.digest(signatureBytes)
+                return bytesToHexString(digest)
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Error al obtener la huella SHA-256: ${e.message}")
+        }
+        return "No se pudo obtener"
+    }
+
+    /**
+     * Convierte bytes a string hexadecimal con formato
+     */
+    private fun bytesToHexString(bytes: ByteArray): String {
+        val hexString = StringBuilder()
+        for (i in bytes.indices) {
+            if (i > 0) hexString.append(":")
+            val hex = Integer.toHexString(0xff and bytes[i].toInt())
+            if (hex.length == 1) hexString.append("0")
+            hexString.append(hex)
+        }
+        return hexString.toString()
+    }
+
+    /**
+     * Cambia a la siguiente configuración de autenticación
+     * @return booleano que indica si hay más configuraciones disponibles
+     */
+    fun switchToNextConfig(): Boolean {
         currentConfigIndex = (currentConfigIndex + 1) % CONFIGS
         Log.d(TAG, "Cambiando a configuración alternativa #$currentConfigIndex")
 
@@ -131,8 +188,21 @@ class GoogleAuthClient @Inject constructor(
             0 -> GoogleSignIn.getClient(context, gso)
             1 -> GoogleSignIn.getClient(context, gsoAlternative1)
             2 -> GoogleSignIn.getClient(context, gsoAlternative2)
+            3 -> GoogleSignIn.getClient(context, gsoAlternative3)
             else -> GoogleSignIn.getClient(context, gso)
         }
+
+        // Intentar limpiar estado de Google Play Services para evitar caché
+        try {
+            googleSignInClient.signOut().addOnCompleteListener {
+                // No necesitamos esperar, solo queremos limpiar el estado
+                Log.d(TAG, "Sesión limpiada antes de cambiar configuración")
+            }
+        } catch (e: Exception) {
+            Log.d(TAG, "No se pudo limpiar sesión: ${e.message}")
+        }
+
+        return currentConfigIndex != 0 // Devuelve false si hemos dado la vuelta completa
     }
 
     /**
@@ -177,6 +247,13 @@ class GoogleAuthClient @Inject constructor(
                     // Procesar normalmente con token
                     val idToken = account.idToken
                     if (idToken.isNullOrEmpty()) {
+                        // Intentar con serverAuthCode para configuración 3
+                        if (currentConfigIndex == 3 && account.serverAuthCode != null) {
+                            val authCode = account.serverAuthCode!!
+                            Log.d(TAG, "Utilizando serverAuthCode en lugar de token")
+                            return Result.success("authcode:$authCode")
+                        }
+
                         Log.e(TAG, "Token ID nulo o vacío")
                         Result.failure(Exception("No se pudo obtener el token de Google"))
                     } else {
