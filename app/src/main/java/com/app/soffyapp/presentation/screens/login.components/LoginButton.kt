@@ -1,70 +1,55 @@
 package com.app.soffyapp.presentation.screens.login.components
 
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.ApiException
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
+import com.app.soffyapp.R
+import com.app.soffyapp.presentation.screens.login.LoginViewModel
 
 /**
  * Componente de botón para autenticación con Google
+ * Mantiene el estilo visual original usando la imagen de Google
  *
- * Este componente:
- * - Muestra un botón de inicio de sesión con Google
- * - Maneja el flujo de autenticación nativo de Google
- * - Proporciona el token ID al componente padre cuando el login es exitoso
- *
- * @param onTokenReceived Callback que recibe el token ID de Google cuando el login es exitoso
+ * @param viewModel ViewModel que maneja la lógica de autenticación
  */
 @Composable
-fun GoogleLoginButton(onTokenReceived: (String) -> Unit) {
-    // Obtiene el contexto actual de la aplicación
-    val context = LocalContext.current
-
+fun GoogleLoginButton(viewModel: LoginViewModel) {
     // Configura el lanzador para el resultado de la actividad de login
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
     ) { result ->
-        // Procesa el resultado del intent de login
-        val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-        try {
-            // Obtiene la cuenta de Google
-            val account = task.getResult(ApiException::class.java)
-            val idToken = account?.idToken
+        // Pasa el resultado directamente al ViewModel
+        viewModel.handleGoogleSignInResult(result.data)
+    }
 
-            // Si se obtuvo un token válido, lo pasa al callback
-            if (idToken != null) {
-                onTokenReceived(idToken)
+    // Resetear contador de reintentos al hacer clic en el botón
+    // para asegurar que siempre tengamos intentos disponibles cuando
+    // el usuario inicia una nueva sesión de autenticación
+
+    // Botón de Google (usa la imagen original del diseño)
+    Image(
+        painter = painterResource(id = R.drawable.google),
+        contentDescription = "Iniciar sesión con Google",
+        modifier = Modifier
+            .width(250.dp)
+            .height(60.dp)
+            .clip(RoundedCornerShape(12.dp))
+            .clickable {
+                // Resetear contador de reintentos
+                viewModel.resetRetryCount()
+
+                // Obtiene el intent para iniciar sesión desde el ViewModel
+                val signInIntent = viewModel.getGoogleSignInIntent()
+                launcher.launch(signInIntent)
             }
-        } catch (e: ApiException) {
-            // Manejo de errores durante el login
-            Log.e("GoogleSignIn", "Error en el login", e)
-        }
-    }
-
-    // Botón que inicia el flujo de autenticación
-    Button(
-        onClick = {
-            // Configura las opciones de login con Google
-            val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken("TU_CLIENT_ID_WEB") // Reemplazar con client ID real
-                .requestEmail() // Solicita el email del usuario
-                .build()
-
-            // Crea el cliente de Google SignIn
-            val googleSignInClient = GoogleSignIn.getClient(context, gso)
-
-            // Obtiene el intent de login y lo lanza
-            val signInIntent = googleSignInClient.signInIntent
-            launcher.launch(signInIntent)
-        }
-    ) {
-        // Texto del botón
-        Text("Iniciar sesión con Google")
-    }
+    )
 }
