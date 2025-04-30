@@ -68,7 +68,7 @@ fun ExpedienteScreen(
                         ActionButtons(
                             onPsicologiaClick = { navController.navigate("psicologia/$pacienteId") },
                             onNutricionClick = { navController.navigate("nutricion/$pacienteId") },
-                            onBoletaClick = { navController.navigate("boleta/$pacienteId") }
+                            onCentroEducativoClick = { navController.navigate("centroeducativo/$pacienteId") }
                         )
 
                         Spacer(modifier = Modifier.height(24.dp))

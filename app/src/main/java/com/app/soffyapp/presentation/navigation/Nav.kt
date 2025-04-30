@@ -23,6 +23,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.app.soffyapp.presentation.screens.pacientes.PacientesScreen
 import com.app.soffyapp.presentation.screens.expediente.ExpedienteScreen
+import com.app.soffyapp.presentation.screens.centroeducativo.CentroEducativoScreen
 import com.app.soffyapp.presentation.screens.detail.components.Component as DetailScreen
 import com.app.soffyapp.presentation.screens.home.components.Component as HomeScreen
 
@@ -113,6 +114,15 @@ fun AppNavigation() {
                     navController = navController
                 )
             }
+            composable(
+                route = "centroeducativo/{id}"
+            ) { backStackEntry ->
+                val pacienteId = backStackEntry.arguments?.getString("id")?.toIntOrNull() ?: return@composable
+                CentroEducativoScreen(
+                    pacienteId = pacienteId,
+                    navController = navController
+                )
+            }
         }
     }
 }
@@ -140,6 +150,9 @@ sealed class Screens(
 
     //Pantalla de expedientes
     object Expediente : Screens("expediente", "Expediente", Icons.Default.Info)
+
+    // Pantalla de Centro Educativo
+    object CentroEducativo : Screens("centroeducativo", "Centro Educativo", Icons.Default.Info)
 
     companion object {
         // Lista de todas las pantallas disponibles

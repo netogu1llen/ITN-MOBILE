@@ -5,6 +5,9 @@ import com.app.soffyapp.data.repository.PacientesRepositoryImpl
 import com.app.soffyapp.domain.repository.PacientesRepository
 import com.app.soffyapp.data.remote.api.ExpedienteApi
 import com.app.soffyapp.data.repository.ExpedienteRepositoryImpl
+import com.app.soffyapp.domain.repository.CentroEducativoRepository
+import com.app.soffyapp.data.remote.api.CentroEducativoApi
+import com.app.soffyapp.data.repository.CentroEducativoRepositoryImpl
 import com.app.soffyapp.domain.repository.ExpedienteRepository
 import dagger.Module
 import dagger.Provides
@@ -42,4 +45,15 @@ object AppModule {
     @Provides
     @Singleton
     fun provideExpedienteRepository(api: ExpedienteApi): ExpedienteRepository = ExpedienteRepositoryImpl(api)
+
+    @Provides
+    @Singleton
+    fun provideCentroEducativoApi(retrofit: Retrofit): CentroEducativoApi =
+        retrofit.create(CentroEducativoApi::class.java)
+
+    @Provides
+    @Singleton
+    fun provideCentroEducativoRepository(api: CentroEducativoApi): CentroEducativoRepository =
+        CentroEducativoRepositoryImpl(api)
+
 }
