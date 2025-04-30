@@ -81,4 +81,12 @@ dependencies {
 
     // IMPORTANTE: Esta dependencia contiene el paquete kotlinx.coroutines.tasks
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
+
+    // Retrofit for API network calls
+    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
+
+// OkHttp for networking (add these when you're ready to implement OkHttp)
+    implementation ("com.squareup.okhttp3:okhttp:4.11.0")
+    implementation ("com.squareup.okhttp3:logging-interceptor:4.11.0")
 }
