@@ -44,6 +44,7 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.core:core-ktx:1.12.0")
+    implementation("com.google.android.material:material:1.11.0")
 
     // Jetpack Compose
     implementation(platform(libs.androidx.compose.bom))
@@ -57,8 +58,17 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
-    // Cliente de Google Play Services
+    // ===== GOOGLE AUTH DEPENDENCIES =====
+    // Google Play Services Auth - fix for GoogleSignIn, GoogleSignInOptions, etc.
     implementation("com.google.android.gms:play-services-auth:21.0.0")
+    // Google Play Services Base - fix for GoogleApiAvailability
+    implementation("com.google.android.gms:play-services-base:18.3.0")
+
+    // ===== KOTLIN COROUTINES =====
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+    // Coroutines Play Services - fix for kotlinx.coroutines.tasks
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
 
     // DataStore Preferences
     implementation("androidx.datastore:datastore-preferences:1.0.0")
@@ -75,18 +85,12 @@ dependencies {
     // Coil
     implementation(libs.coil.compose)
 
-    // Kotlin Coroutines
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+    // Room
+    implementation("androidx.room:room-runtime:2.6.1")
+    kapt("androidx.room:room-compiler:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
 
-    // IMPORTANTE: Esta dependencia contiene el paquete kotlinx.coroutines.tasks
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
-
-    // Retrofit for API network calls
-    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
-
-// OkHttp for networking (add these when you're ready to implement OkHttp)
-    implementation ("com.squareup.okhttp3:okhttp:4.11.0")
-    implementation ("com.squareup.okhttp3:logging-interceptor:4.11.0")
+    // OkHttp for networking
+    implementation("com.squareup.okhttp3:okhttp:4.11.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
 }

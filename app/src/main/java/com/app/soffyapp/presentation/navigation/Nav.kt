@@ -2,31 +2,32 @@ package com.app.soffyapp.presentation.navigation
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
-import androidx.compose.ui.graphics.Color
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.painterResource
-import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.app.soffyapp.R
+import androidx.navigation.navArgument
 import com.app.soffyapp.presentation.screens.detail.components.Component as DetailScreen
 import com.app.soffyapp.presentation.screens.home.components.Component as HomeScreen
 import com.app.soffyapp.presentation.screens.login.components.LoginScreen
+import com.app.soffyapp.presentation.screens.pacientes.PacientesScreen
+import com.app.soffyapp.presentation.screens.pacientes.components.PacienteDetailScreen
 
 /**
  * Componente principal de navegación de la aplicación
@@ -51,8 +52,9 @@ fun AppNavigation() {
     // Scaffold es el layout principal que incluye la estructura de la app
     Scaffold(
         bottomBar = {
-            if (currentDestination?.route != Screens.Login.route) {
-            // Barra de navegación inferior
+            if (currentDestination?.route != Screens.Login.route &&
+                !currentDestination?.route.toString().startsWith("detallePaciente")) {
+                // Barra de navegación inferior
                 NavigationBar(
                     containerColor = Color(0xFFFEA02F) // Aquí aplicamos el color #FEA02F
                 ) {
@@ -60,10 +62,8 @@ fun AppNavigation() {
                     Screens.values.forEach { screen ->
                         NavigationBarItem(
                             icon = {
-                                // Verifica si el icono es null, si lo es, usa un ícono predeterminado
-                                val iconToUse = screen.icon ?: Icons.Default.Home
                                 Icon(
-                                    imageVector = iconToUse,
+                                    imageVector = screen.icon,
                                     contentDescription = screen.route
                                 )
                             },
@@ -100,6 +100,28 @@ fun AppNavigation() {
             composable(Screens.Login.route) { LoginScreen(navController) }
             composable(Screens.Home.route) { HomeScreen(navController) }
             composable(Screens.Detail.route) { DetailScreen(navController) }
+
+            // Pantalla de pacientes
+            composable(Screens.Pacientes.route) {
+                PacientesScreen(
+                    navController = navController,
+                    onPacienteClick = { pacienteId ->
+                        navController.navigate("detallePaciente/$pacienteId")
+                    }
+                )
+            }
+
+            // Pantalla de detalle de paciente
+            composable(
+                route = "detallePaciente/{pacienteId}",
+                arguments = listOf(navArgument("pacienteId") { type = NavType.IntType })
+            ) { backStackEntry ->
+                val pacienteId = backStackEntry.arguments?.getInt("pacienteId") ?: -1
+                PacienteDetailScreen(
+                    pacienteId = pacienteId,
+                    navController = navController
+                )
+            }
         }
     }
 }
@@ -109,12 +131,12 @@ fun AppNavigation() {
  *
  * @property route Ruta única para la navegación
  * @property title Título mostrado en la UI
- * @property iconRes Recurso del icono para la barra de navegación
+ * @property icon Icono vectorial para la barra de navegación
  */
 sealed class Screens(
     val route: String,
     val title: String,
-    val icon: ImageVector? = null
+    val icon: ImageVector = Icons.Default.Home
 ) {
     // Pantalla de login
     object Login : Screens("login", "Iniciar sesión")
@@ -125,8 +147,11 @@ sealed class Screens(
     // Pantalla de detalle
     object Detail : Screens("detail", "Detalle", Icons.Default.Info)
 
+    // Pantalla de pacientes
+    object Pacientes : Screens("pacientes", "Pacientes", Icons.Default.Info)
+
     companion object {
-        // Lista de todas las pantallas disponibles
-        val values = listOf(Home, Detail)
+        // Lista de todas las pantallas disponibles en la barra de navegación
+        val values = listOf(Home, Detail, Pacientes)
     }
 }
