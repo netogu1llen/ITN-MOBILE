@@ -17,6 +17,7 @@ import javax.inject.Singleton
 object AppModule {
     @Provides
     @Singleton
+    @PacientesRetrofit
     fun provideRetrofit(): Retrofit =
         Retrofit
             .Builder()
@@ -26,7 +27,7 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun providePacientesApi(retrofit: Retrofit): PacientesApi = retrofit.create(PacientesApi::class.java)
+    fun providePacientesApi(@PacientesRetrofit retrofit: Retrofit): PacientesApi = retrofit.create(PacientesApi::class.java)
 
     @Provides
     @Singleton
