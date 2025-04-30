@@ -22,15 +22,15 @@ import javax.inject.Singleton
 object AuthModule {
 
     /**
-     * Proporciona una instancia singleton de [GoogleAuthClient] configurada con el ID de cliente OAuth de Google.
+     * Proporciona una instancia singleton de [GoogleAuthClient]
      */
     @Provides
     @Singleton
     fun provideGoogleAuthClient(
         @ApplicationContext context: Context
     ): GoogleAuthClient {
-        val clientId = context.getString(R.string.google_cloud_client_id)
-        return GoogleAuthClient(context, clientId)
+        // Ya no pasamos el clientId como parámetro separado
+        return GoogleAuthClient(context)
     }
 
     /**
