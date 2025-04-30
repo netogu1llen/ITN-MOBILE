@@ -2,8 +2,6 @@ package com.app.soffyapp.presentation.navigation
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -11,24 +9,21 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
-import androidx.compose.ui.graphics.Color
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.compose.NavHost
 import androidx.navigation.NavType
-import androidx.navigation.navArgument
+import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.app.soffyapp.R
+import androidx.navigation.navArgument
 import com.app.soffyapp.presentation.screens.pacientes.PacientesScreen
 import com.app.soffyapp.presentation.screens.detail.components.Component as DetailScreen
 import com.app.soffyapp.presentation.screens.home.components.Component as HomeScreen
@@ -60,7 +55,6 @@ fun AppNavigation() {
             // Barra de navegación inferior
             NavigationBar(
                 containerColor = Color(0xFFFEA02F) // Aquí aplicamos el color #FEA02F
-                containerColor = Color(0xFFFEA02F), // Aquí aplicamos el color #FEA02F
             ) {
                 // Itera sobre todas las pantallas definidas
                 Screens.values.forEach { screen ->
@@ -69,7 +63,6 @@ fun AppNavigation() {
                             // Icono del item de navegación
                             Icon(
                                 imageVector = screen.icon,
-                                contentDescription = screen.route,
                                 contentDescription = screen.route
                             )
                         },
@@ -77,11 +70,6 @@ fun AppNavigation() {
                         selected = currentDestination?.hierarchy?.any {
                             it.route == screen.route
                         } == true, // Estado seleccionado
-                        selected =
-                            currentDestination?.hierarchy?.any {
-                                it.route == screen.route
-                            } == true,
-                        // Estado seleccionado
                         onClick = {
                             // Navegación con configuración optimizada:
                             navController.navigate(screen.route) {
@@ -94,19 +82,15 @@ fun AppNavigation() {
                                 // 3. Restaura estado previo si existe
                                 restoreState = true
                             }
-                        },
                         }
                     )
                 }
             }
-        },
         }
     ) { innerPadding ->
         // Host de navegación que contiene las pantallas
         NavHost(
             navController = navController,
-            startDestination = Screens.Home.route,
-            modifier = Modifier.padding(innerPadding),
             startDestination = Screens.Home.route, // Pantalla inicial
             modifier = Modifier.padding(innerPadding)
         ) {
@@ -119,7 +103,7 @@ fun AppNavigation() {
                     navController = navController,
                     onPacienteClick = { pacienteId ->
                         navController.navigate("detallePaciente/$pacienteId")
-                    },
+                    }
                 )
             }
 
@@ -142,13 +126,12 @@ fun AppNavigation() {
  *
  * @property route Ruta única para la navegación
  * @property title Título mostrado en la UI
- * @property iconRes Recurso del icono para la barra de navegación
+ * @property icon Icono de vector para la barra de navegación
  */
 sealed class Screens(
     val route: String,
     val title: String,
     val icon: ImageVector
-    val icon: ImageVector,
 ) {
     // Pantalla de inicio
     object Home : Screens("home", "Inicio", Icons.Default.Home)
