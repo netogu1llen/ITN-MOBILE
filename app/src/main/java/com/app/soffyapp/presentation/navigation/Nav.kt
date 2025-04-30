@@ -17,15 +17,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.app.soffyapp.presentation.screens.pacientes.PacientesScreen
-import com.app.soffyapp.presentation.screens.expediente.ExpedienteScreen
-import com.app.soffyapp.presentation.screens.centroeducativo.CentroEducativoScreen
+import androidx.navigation.navArgument
 import com.app.soffyapp.presentation.screens.detail.components.Component as DetailScreen
 import com.app.soffyapp.presentation.screens.home.components.Component as HomeScreen
+import com.app.soffyapp.presentation.screens.login.components.LoginScreen
+import com.app.soffyapp.presentation.screens.pacientes.PacientesScreen
+import com.app.soffyapp.presentation.screens.pacientes.components.PacienteDetailScreen
 
 /**
  * Componente principal de navegación de la aplicación
@@ -50,75 +52,72 @@ fun AppNavigation() {
     // Scaffold es el layout principal que incluye la estructura de la app
     Scaffold(
         bottomBar = {
-            // Barra de navegación inferior
-            NavigationBar(
-                containerColor = Color(0xFFFEA02F), // Aquí aplicamos el color #FEA02F
-            ) {
-                // Itera sobre todas las pantallas definidas
-                Screens.values.forEach { screen ->
-                    NavigationBarItem(
-                        icon = {
-                            // Icono del item de navegación
-                            Icon(
-                                imageVector = screen.icon,
-                                contentDescription = screen.route,
-                            )
-                        },
-                        label = { Text(screen.title) }, // Texto del item
-                        selected =
-                            currentDestination?.hierarchy?.any {
+            if (currentDestination?.route != Screens.Login.route &&
+                !currentDestination?.route.toString().startsWith("detallePaciente")) {
+                // Barra de navegación inferior
+                NavigationBar(
+                    containerColor = Color(0xFFFEA02F) // Aquí aplicamos el color #FEA02F
+                ) {
+                    // Itera sobre todas las pantallas definidas
+                    Screens.values.forEach { screen ->
+                        NavigationBarItem(
+                            icon = {
+                                Icon(
+                                    imageVector = screen.icon,
+                                    contentDescription = screen.route
+                                )
+                            },
+                            label = { Text(screen.title) }, // Texto del item
+                            selected = currentDestination?.hierarchy?.any {
                                 it.route == screen.route
-                            } == true,
-                        // Estado seleccionado
-                        onClick = {
-                            // Navegación con configuración optimizada:
-                            navController.navigate(screen.route) {
-                                // 1. Limpia back stack hasta el inicio
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true // Conserva estado
+                            } == true, // Estado seleccionado
+                            onClick = {
+                                // Navegación con configuración optimizada:
+                                navController.navigate(screen.route) {
+                                    // 1. Limpia back stack hasta el inicio
+                                    popUpTo(navController.graph.findStartDestination().id) {
+                                        saveState = true // Conserva estado
+                                    }
+                                    // 2. Evita múltiples instancias
+                                    launchSingleTop = true
+                                    // 3. Restaura estado previo si existe
+                                    restoreState = true
                                 }
-                                // 2. Evita múltiples instancias
-                                launchSingleTop = true
-                                // 3. Restaura estado previo si existe
-                                restoreState = true
                             }
-                        },
-                    )
+                        )
+                    }
                 }
             }
-        },
+        }
     ) { innerPadding ->
         // Host de navegación que contiene las pantallas
         NavHost(
             navController = navController,
-            startDestination = Screens.Home.route, // Pantalla inicial
-            modifier = Modifier.padding(innerPadding),
+            startDestination = Screens.Login.route, // Pantalla inicial
+            modifier = Modifier.padding(innerPadding)
         ) {
             // Definición de pantallas/composables
+            composable(Screens.Login.route) { LoginScreen(navController) }
             composable(Screens.Home.route) { HomeScreen(navController) }
             composable(Screens.Detail.route) { DetailScreen(navController) }
+
+            // Pantalla de pacientes
             composable(Screens.Pacientes.route) {
                 PacientesScreen(
+                    navController = navController,
                     onPacienteClick = { pacienteId ->
-                        // Navega a detalle si lo necesitas
-                        navController.navigate("${Screens.Expediente.route}/$pacienteId")
-                    },
+                        navController.navigate("detallePaciente/$pacienteId")
+                    }
                 )
             }
+
+            // Pantalla de detalle de paciente
             composable(
-                route = "expediente/{id}",
+                route = "detallePaciente/{pacienteId}",
+                arguments = listOf(navArgument("pacienteId") { type = NavType.IntType })
             ) { backStackEntry ->
-                val pacienteId = backStackEntry.arguments?.getString("id")?.toIntOrNull() ?: return@composable
-                ExpedienteScreen(
-                    pacienteId = pacienteId,
-                    navController = navController
-                )
-            }
-            composable(
-                route = "centroeducativo/{id}"
-            ) { backStackEntry ->
-                val pacienteId = backStackEntry.arguments?.getString("id")?.toIntOrNull() ?: return@composable
-                CentroEducativoScreen(
+                val pacienteId = backStackEntry.arguments?.getInt("pacienteId") ?: -1
+                PacienteDetailScreen(
                     pacienteId = pacienteId,
                     navController = navController
                 )
@@ -132,13 +131,16 @@ fun AppNavigation() {
  *
  * @property route Ruta única para la navegación
  * @property title Título mostrado en la UI
- * @property iconRes Recurso del icono para la barra de navegación
+ * @property icon Icono vectorial para la barra de navegación
  */
 sealed class Screens(
     val route: String,
     val title: String,
-    val icon: ImageVector,
+    val icon: ImageVector = Icons.Default.Home
 ) {
+    // Pantalla de login
+    object Login : Screens("login", "Iniciar sesión")
+
     // Pantalla de inicio
     object Home : Screens("home", "Inicio", Icons.Default.Home)
 
@@ -148,14 +150,8 @@ sealed class Screens(
     // Pantalla de pacientes
     object Pacientes : Screens("pacientes", "Pacientes", Icons.Default.Info)
 
-    //Pantalla de expedientes
-    object Expediente : Screens("expediente", "Expediente", Icons.Default.Info)
-
-    // Pantalla de Centro Educativo
-    object CentroEducativo : Screens("centroeducativo", "Centro Educativo", Icons.Default.Info)
-
     companion object {
-        // Lista de todas las pantallas disponibles
+        // Lista de todas las pantallas disponibles en la barra de navegación
         val values = listOf(Home, Detail, Pacientes)
     }
 }
