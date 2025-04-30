@@ -1,9 +1,7 @@
 package com.app.soffyapp.presentation.screens.login.components
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -12,9 +10,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -29,6 +25,7 @@ import com.app.soffyapp.presentation.screens.login.LoginViewModel
 
 /**
  * Pantalla de inicio de sesión integrada con ViewModel y Hilt
+ * Añadido soporte para reintento automático de autenticación con Google
  *
  * @param navController Controlador de navegación para navegar entre pantallas
  * @param viewModel ViewModel que maneja la lógica de autenticación
@@ -50,11 +47,22 @@ fun LoginScreen(
     }
 
     // Efecto para navegar a la pantalla home después de login exitoso
+    // y manejar reintento automático con la nueva configuración
     LaunchedEffect(uiState) {
-        if (uiState is LoginUiState.Success) {
-            navController.navigate("home") {
-                // Borrar historial de navegación para evitar volver al login con botón atrás
-                popUpTo("login") { inclusive = true }
+        when (uiState) {
+            is LoginUiState.Success -> {
+                navController.navigate("home") {
+                    // Borrar historial de navegación para evitar volver al login con botón atrás
+                    popUpTo("login") { inclusive = true }
+                }
+            }
+            is LoginUiState.NeedsReauth -> {
+                // Si necesitamos reautenticar, lanzamos nuevamente el intent de Google
+                val signInIntent = viewModel.getGoogleSignInIntent()
+                googleSignInLauncher.launch(signInIntent)
+            }
+            else -> {
+                // No hacer nada para otros estados
             }
         }
     }
@@ -126,35 +134,28 @@ fun LoginScreen(
 
                         Spacer(modifier = Modifier.height(16.dp))
 
-                        // Botón para reintentar
-                        Image(
-                            painter = painterResource(id = R.drawable.google),
-                            contentDescription = "Iniciar sesión con Google",
-                            modifier = Modifier
-                                .width(250.dp)
-                                .height(60.dp)
-                                .clip(RoundedCornerShape(12.dp))
-                                .clickable {
-                                    val signInIntent = viewModel.getGoogleSignInIntent()
-                                    googleSignInLauncher.launch(signInIntent)
-                                }
-                        )
+                        // Usar el componente GoogleLoginButton
+                        GoogleLoginButton(viewModel = viewModel)
                     }
                 }
-                else -> {
-                    // Botón de Google Sign-In (estado idle o default)
-                    Image(
-                        painter = painterResource(id = R.drawable.google),
-                        contentDescription = "Iniciar sesión con Google",
-                        modifier = Modifier
-                            .width(250.dp)
-                            .height(60.dp)
-                            .clip(RoundedCornerShape(12.dp))
-                            .clickable {
-                                val signInIntent = viewModel.getGoogleSignInIntent()
-                                googleSignInLauncher.launch(signInIntent)
-                            }
+                is LoginUiState.NeedsReauth -> {
+                    // Este estado se maneja en LaunchedEffect, pero mostramos mensaje informativo
+                    Text(
+                        text = "Reconfigurando autenticación...",
+                        textAlign = TextAlign.Center,
+                        fontSize = 16.sp,
+                        color = androidx.compose.ui.graphics.Color.Gray
                     )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(40.dp)
+                    )
+                }
+                else -> {
+                    // Estado idle o default
+                    GoogleLoginButton(viewModel = viewModel)
                 }
             }
         }
