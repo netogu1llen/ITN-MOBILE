@@ -20,10 +20,22 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.app.soffyapp.presentation.screens.centroeducativo.components.CentroEducativoListContent
 
+/**
+ * Pantalla Centro Educativo
+ *
+ * Muestra el historial académico (boletas) de un paciente.
+ *
+ * Implementa:
+ * - TopAppBar con botón de regreso
+ * - Carga automática de datos mediante LaunchedEffect
+ * - Renderizado condicional con estado del ViewModel
+ *
+ * @OptIn ExperimentalMaterial3Api - Se usa TopAppBar de Material 3
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CentroEducativoScreen(
-    pacienteId: Int,  // Recibes el id aquí
+    pacienteId: Int, 
     navController: NavController,
     viewModel: CentroEducativoViewModel = hiltViewModel()
 ) {

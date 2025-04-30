@@ -8,7 +8,7 @@ import androidx.compose.ui.Modifier
 @Composable
 fun ActionButtons(
     onPsicologiaClick: () -> Unit,
-    onNutricionClick: () -> Unit,
+    //onNutricionClick: () -> Unit,
     onCentroEducativoClick: () -> Unit
 ) {
     Row(
@@ -21,12 +21,13 @@ fun ActionButtons(
         ) {
             Text("Psicología")
         }
-        Button(
+        /*Button(
             onClick = onNutricionClick,
             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
         ) {
             Text("Nutrición")
         }
+         */
         Button(
             onClick = onCentroEducativoClick,
             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)

@@ -16,6 +16,21 @@ import androidx.navigation.NavController
 import com.app.soffyapp.presentation.screens.expediente.components.InfoLine
 import com.app.soffyapp.presentation.screens.expediente.components.ActionButtons
 
+/**
+ * Pantalla Expediente
+ *
+ * Muestra los datos generales del expediente de un paciente y botones de acceso
+ * a otras áreas (psicología, nutrición, centro educativo).
+ *
+ * Implementa:
+ * - TopAppBar con botón de regreso
+ * - Carga de datos desde ViewModel con LaunchedEffect
+ * - Renderizado condicional (loading, error, datos)
+ * - Navegación a otras pantallas vinculadas al paciente
+ *
+ * @OptIn ExperimentalMaterial3Api - Uso de TopAppBar y componentes de Material 3
+ */
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExpedienteScreen(
@@ -64,10 +79,9 @@ fun ExpedienteScreen(
                             .verticalScroll(rememberScrollState()),
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        // 🔵 Botones de navegación arriba
                         ActionButtons(
                             onPsicologiaClick = { navController.navigate("psicologia/$pacienteId") },
-                            onNutricionClick = { navController.navigate("nutricion/$pacienteId") },
+                            //onNutricionClick = { navController.navigate("nutricion/$pacienteId") },
                             onCentroEducativoClick = { navController.navigate("centroeducativo/$pacienteId") }
                         )
 
