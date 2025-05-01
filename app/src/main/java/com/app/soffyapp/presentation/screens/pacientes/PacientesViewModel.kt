@@ -3,7 +3,6 @@ package com.app.soffyapp.presentation.screens.pacientes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.soffyapp.domain.usecase.GetPacientesListUseCase
-import com.app.soffyapp.presentation.common.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -13,9 +12,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class PacientesViewModel
-@Inject
-constructor(
+class PacientesViewModel @Inject constructor(
     private val getPacientesListUseCase: GetPacientesListUseCase,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(PacientesUiState())
@@ -27,27 +24,21 @@ constructor(
 
     private fun loadPacientesList() {
         viewModelScope.launch {
-            getPacientesListUseCase().collect { result ->
+            try {
+                val pacientes = getPacientesListUseCase()
                 _uiState.update { state ->
-                    when (result) {
-                        is Result.Loading ->
-                            state.copy(
-                                isLoading = true,
-                            )
-
-                        is Result.Success ->
-                            state.copy(
-                                pacientesList = result.data,
-                                isLoading = false,
-                                error = null,
-                            )
-
-                        is Result.Error ->
-                            state.copy(
-                                error = result.exception.message,
-                                isLoading = false,
-                            )
-                    }
+                    state.copy(
+                        pacientesList = pacientes,
+                        isLoading = false,
+                        error = null,
+                    )
+                }
+            } catch (e: Exception) {
+                _uiState.update { state ->
+                    state.copy(
+                        isLoading = false,
+                        error = e.message,
+                    )
                 }
             }
         }

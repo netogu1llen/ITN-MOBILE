@@ -1,6 +1,11 @@
-package com.app.soffyapp.domain.model
+package com.app.soffyapp.data.local.entity
 
-data class Paciente(
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "pacientes")
+data class PacienteEntity(
+    @PrimaryKey
     val idExpediente: Int,
     val nombre: String,
     val apellidoPaterno: String,
