@@ -1,11 +1,8 @@
 package com.app.soffyapp.presentation
 
 import android.os.Bundle
-import com.app.soffyapp.presentation.navigation.AppNavigation
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
 import com.app.soffyapp.presentation.navigation.AppNavigation
 import com.app.soffyapp.presentation.theme.MyAppTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -20,7 +17,6 @@ import dagger.hilt.android.AndroidEntryPoint
  * 4. Inicializa el sistema de navegación principal
  *
  * Hereda de ComponentActivity para soportar Jetpack Compose.
- * Anotada con @AndroidEntryPoint para la inyección de dependencias con Hilt.
  */
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
