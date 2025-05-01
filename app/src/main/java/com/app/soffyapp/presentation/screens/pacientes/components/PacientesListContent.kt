@@ -1,12 +1,15 @@
 package com.app.soffyapp.presentation.screens.pacientes.components
 
-import android.util.Log
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -26,6 +29,18 @@ fun PacientesListContent(
     onSearchQueryChange: (String) -> Unit,
     onPacienteClick: (Int) -> Unit,
 ) {
+    val filteredList =
+        remember(pacientesList, searchQuery) {
+            val query = searchQuery.trim().lowercase()
+
+            pacientesList.filter { paciente ->
+                val nombre = paciente.nombreCompleto.lowercase()
+                val fechaFormateada = paciente.fechaNacimiento.formatearFecha().lowercase()
+
+                nombre.contains(query) || fechaFormateada.contains(query)
+            }
+        }
+
     Box(modifier = Modifier.fillMaxSize()) {
         when {
             isLoading -> {
@@ -51,27 +66,13 @@ fun PacientesListContent(
                         verticalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
                         items(
-                            items = pacientesList.withIndex().toList(),
-                            key = { (index, _) -> index }
-                        ) { (_, paciente) ->
-                            val nombreMostrar = if (paciente.nombre.isNotBlank() || paciente.apellidoPaterno.isNotBlank()) {
-                                "${paciente.nombre} ${paciente.apellidoPaterno}".trim()
-                            } else {
-                                "Paciente sin nombre"
-                            }
-
-                            Log.d("PacienteData", "Mostrando Paciente id: ${paciente.idExpediente}, nombreMostrar: '$nombreMostrar'")
-
-                            Text(
-                                text = nombreMostrar,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clickable {
-                                        onPacienteClick(paciente.idExpediente)
-                                    }
-                                    .padding(vertical = 8.dp)
-                            )
-
+                            items = filteredList,
+                            key = { it.idExpediente },
+                        ) { paciente ->
+                            PacienteCard(
+                                paciente = paciente,
+                                onClick = { onPacienteClick(paciente.idExpediente) },
+                                )
                         }
                     }
                 }

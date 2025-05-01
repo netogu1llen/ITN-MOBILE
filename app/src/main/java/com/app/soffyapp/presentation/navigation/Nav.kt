@@ -15,18 +15,22 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.compose.NavHost
 import androidx.navigation.NavType
-import androidx.navigation.navArgument
+import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.app.soffyapp.presentation.screens.pacientes.PacientesScreen
+import com.app.soffyapp.presentation.screens.expediente.ExpedienteScreen
+import com.app.soffyapp.presentation.screens.psicologia.PsicologiaDetailScreen
+import com.app.soffyapp.presentation.screens.psicologia.PsicologiaScreen
+import com.app.soffyapp.presentation.screens.psicologia.PsicologiaViewModel
 import com.app.soffyapp.presentation.screens.detail.components.Component as DetailScreen
 import com.app.soffyapp.presentation.screens.home.components.Component as HomeScreen
-import com.app.soffyapp.presentation.screens.pacientes.components.PacienteDetailScreen
 
 /**
  * Componente principal de navegación de la aplicación
@@ -48,6 +52,7 @@ fun AppNavigation() {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
 
+    // Scaffold es el layout principal que incluye la estructura de la app
     Scaffold(
         bottomBar = {
             // Barra de navegación inferior
@@ -66,9 +71,9 @@ fun AppNavigation() {
                         },
                         label = { Text(screen.title) }, // Texto del item
                         selected =
-                            currentDestination?.hierarchy?.any {
-                                it.route == screen.route
-                            } == true,
+                        currentDestination?.hierarchy?.any {
+                            it.route == screen.route
+                        } == true,
                         // Estado seleccionado
                         onClick = {
                             // Navegación con configuración optimizada:
@@ -88,39 +93,55 @@ fun AppNavigation() {
             }
         },
     ) { innerPadding ->
+        // Host de navegación que contiene las pantallas
         NavHost(
             navController = navController,
-            startDestination = Screens.Home.route,
+            startDestination = Screens.Home.route, // Pantalla inicial
             modifier = Modifier.padding(innerPadding),
         ) {
+            // Definición de pantallas/composables
             composable(Screens.Home.route) { HomeScreen(navController) }
             composable(Screens.Detail.route) { DetailScreen(navController) }
-
             composable(Screens.Pacientes.route) {
                 PacientesScreen(
-                    navController = navController,
                     onPacienteClick = { pacienteId ->
-                        navController.navigate("detallePaciente/$pacienteId")
+                        // Navega a detalle si lo necesitas
+                        navController.navigate("${Screens.Expediente.route}/$pacienteId")
                     },
+                )
+            }
+            composable(
+                route = "expediente/{id}",
+            ) { backStackEntry ->
+                val pacienteId = backStackEntry.arguments?.getString("id")?.toIntOrNull() ?: return@composable
+                ExpedienteScreen(
+                    pacienteId = pacienteId,
+                    navController = navController
+                )
+            }
+            composable(
+                route = "psicologia/{id}"
+            ) { backStackEntry ->
+                val pacienteId = backStackEntry.arguments?.getString("id")?.toIntOrNull() ?: return@composable
+                PsicologiaScreen(
+                    pacienteId = pacienteId,
+                    navController = navController
                 )
             }
 
             composable(
-                route = "detallePaciente/{pacienteId}",
-                arguments = listOf(navArgument("pacienteId") { type = NavType.IntType })
+                route = "psicologia_detalle/{idSeguimiento}",
+                arguments = listOf(navArgument("idSeguimiento") { type = NavType.IntType })
             ) { backStackEntry ->
-                val pacienteId = backStackEntry.arguments?.getInt("pacienteId") ?: -1
-                PacienteDetailScreen(
-                    pacienteId = pacienteId,
+                val idSeguimiento = backStackEntry.arguments?.getInt("idSeguimiento") ?: return@composable
+                PsicologiaDetailScreen(
+                    idSeguimiento = idSeguimiento,
                     navController = navController
                 )
             }
         }
     }
 }
-
-
-
 
 /**
  * Clase sellada que define las pantallas de la aplicación
@@ -142,6 +163,12 @@ sealed class Screens(
 
     // Pantalla de pacientes
     object Pacientes : Screens("pacientes", "Pacientes", Icons.Default.Info)
+
+    //Pantalla de expedientes
+    object Expediente : Screens("expediente", "Expediente", Icons.Default.Info)
+
+    // Pantalla de psicologia
+    object Psicologia : Screens("psicologia", "Psicologia", Icons.Default.Info)
 
     companion object {
         // Lista de todas las pantallas disponibles
