@@ -48,6 +48,7 @@ fun AppNavigation() {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
 
+    // Scaffold es el layout principal que incluye la estructura de la app
     Scaffold(
         bottomBar = {
             // Barra de navegación inferior
