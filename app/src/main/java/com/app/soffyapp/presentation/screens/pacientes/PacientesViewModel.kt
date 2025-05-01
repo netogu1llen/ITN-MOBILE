@@ -24,14 +24,22 @@ class PacientesViewModel @Inject constructor(
 
     private fun loadPacientesList() {
         viewModelScope.launch {
-            val result = getPacientesListUseCase()
-
-            val pacientesFiltrados = result.filter { paciente ->
-                paciente.idExpediente != 0
-            }
-
-            _uiState.update {
-                it.copy(pacientesList = pacientesFiltrados)
+            try {
+                val pacientes = getPacientesListUseCase()
+                _uiState.update { state ->
+                    state.copy(
+                        pacientesList = pacientes,
+                        isLoading = false,
+                        error = null,
+                    )
+                }
+            } catch (e: Exception) {
+                _uiState.update { state ->
+                    state.copy(
+                        isLoading = false,
+                        error = e.message,
+                    )
+                }
             }
         }
     }
