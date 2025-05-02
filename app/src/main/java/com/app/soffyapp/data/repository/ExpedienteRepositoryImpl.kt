@@ -1,6 +1,5 @@
 package com.app.soffyapp.data.repository
 
-
 import com.app.soffyapp.data.mapper.toDomain
 import com.app.soffyapp.data.remote.api.ExpedienteApi
 import com.app.soffyapp.domain.model.Expediente

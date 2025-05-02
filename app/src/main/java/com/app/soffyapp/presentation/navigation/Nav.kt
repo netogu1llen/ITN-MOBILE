@@ -15,22 +15,18 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
-import com.app.soffyapp.presentation.screens.pacientes.PacientesScreen
-import com.app.soffyapp.presentation.screens.expediente.ExpedienteScreen
-import com.app.soffyapp.presentation.screens.psicologia.PsicologiaDetailScreen
-import com.app.soffyapp.presentation.screens.psicologia.PsicologiaScreen
-import com.app.soffyapp.presentation.screens.psicologia.PsicologiaViewModel
 import com.app.soffyapp.presentation.screens.detail.components.Component as DetailScreen
 import com.app.soffyapp.presentation.screens.home.components.Component as HomeScreen
+import com.app.soffyapp.presentation.screens.pacientes.PacientesScreen
+import com.app.soffyapp.presentation.screens.expediente.ExpedienteScreen
+import com.app.soffyapp.presentation.screens.centroeducativo.CentroEducativoScreen
+import com.app.soffyapp.presentation.screens.login.components.LoginScreen
 
 /**
  * Componente principal de navegación de la aplicación
@@ -55,51 +51,55 @@ fun AppNavigation() {
     // Scaffold es el layout principal que incluye la estructura de la app
     Scaffold(
         bottomBar = {
-            // Barra de navegación inferior
-            NavigationBar(
-                containerColor = Color(0xFFFEA02F), // Aquí aplicamos el color #FEA02F
-            ) {
-                // Itera sobre todas las pantallas definidas
-                Screens.values.forEach { screen ->
-                    NavigationBarItem(
-                        icon = {
-                            // Icono del item de navegación
-                            Icon(
-                                imageVector = screen.icon,
-                                contentDescription = screen.route,
-                            )
-                        },
-                        label = { Text(screen.title) }, // Texto del item
-                        selected =
-                        currentDestination?.hierarchy?.any {
-                            it.route == screen.route
-                        } == true,
-                        // Estado seleccionado
-                        onClick = {
-                            // Navegación con configuración optimizada:
-                            navController.navigate(screen.route) {
-                                // 1. Limpia back stack hasta el inicio
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true // Conserva estado
+            if (currentDestination?.route != Screens.Login.route) {
+                // Barra de navegación inferior solo si no estamos en la pantalla de Login
+                NavigationBar(
+                    containerColor = Color(0xFFFEA02F) // Aquí aplicamos el color #FEA02F
+                ) {
+                    // Itera sobre todas las pantallas definidas, excluyendo Expediente y CentroEducativo
+                    Screens.values.filter { screen ->
+                        screen != Screens.Expediente && screen != Screens.CentroEducativo
+                    }.forEach { screen ->
+                        NavigationBarItem(
+                            icon = {
+                                // Verifica si el icono es null, si lo es, usa un ícono predeterminado
+                                val iconToUse = screen.icon ?: Icons.Default.Home
+                                Icon(
+                                    imageVector = iconToUse,
+                                    contentDescription = screen.route
+                                )
+                            },
+                            label = { Text(screen.title) }, // Texto del item
+                            selected = currentDestination?.hierarchy?.any {
+                                it.route == screen.route
+                            } == true, // Estado seleccionado
+                            onClick = {
+                                // Navegación con configuración optimizada:
+                                navController.navigate(screen.route) {
+                                    // 1. Limpia back stack hasta el inicio
+                                    popUpTo(navController.graph.findStartDestination().id) {
+                                        saveState = true // Conserva estado
+                                    }
+                                    // 2. Evita múltiples instancias
+                                    launchSingleTop = true
+                                    // 3. Restaura estado previo si existe
+                                    restoreState = true
                                 }
-                                // 2. Evita múltiples instancias
-                                launchSingleTop = true
-                                // 3. Restaura estado previo si existe
-                                restoreState = true
                             }
-                        },
-                    )
+                        )
+                    }
                 }
             }
-        },
+        }
     ) { innerPadding ->
         // Host de navegación que contiene las pantallas
         NavHost(
             navController = navController,
-            startDestination = Screens.Home.route, // Pantalla inicial
-            modifier = Modifier.padding(innerPadding),
+            startDestination = Screens.Login.route, // Pantalla inicial
+            modifier = Modifier.padding(innerPadding)
         ) {
             // Definición de pantallas/composables
+            composable(Screens.Login.route) { LoginScreen(navController) }
             composable(Screens.Home.route) { HomeScreen(navController) }
             composable(Screens.Detail.route) { DetailScreen(navController) }
             composable(Screens.Pacientes.route) {
@@ -107,7 +107,7 @@ fun AppNavigation() {
                     onPacienteClick = { pacienteId ->
                         // Navega a detalle si lo necesitas
                         navController.navigate("${Screens.Expediente.route}/$pacienteId")
-                    },
+                    }
                 )
             }
             composable(
@@ -120,22 +120,11 @@ fun AppNavigation() {
                 )
             }
             composable(
-                route = "psicologia/{id}"
+                route = "centroeducativo/{id}"
             ) { backStackEntry ->
                 val pacienteId = backStackEntry.arguments?.getString("id")?.toIntOrNull() ?: return@composable
-                PsicologiaScreen(
+                CentroEducativoScreen(
                     pacienteId = pacienteId,
-                    navController = navController
-                )
-            }
-
-            composable(
-                route = "psicologia_detalle/{idSeguimiento}",
-                arguments = listOf(navArgument("idSeguimiento") { type = NavType.IntType })
-            ) { backStackEntry ->
-                val idSeguimiento = backStackEntry.arguments?.getInt("idSeguimiento") ?: return@composable
-                PsicologiaDetailScreen(
-                    idSeguimiento = idSeguimiento,
                     navController = navController
                 )
             }
@@ -153,8 +142,11 @@ fun AppNavigation() {
 sealed class Screens(
     val route: String,
     val title: String,
-    val icon: ImageVector,
+    val icon: ImageVector? = null // Aquí se garantiza que cada pantalla tenga un ícono asignado
 ) {
+    // Pantalla de login
+    object Login : Screens("login", "Iniciar sesión")
+
     // Pantalla de inicio
     object Home : Screens("home", "Inicio", Icons.Default.Home)
 
@@ -164,14 +156,14 @@ sealed class Screens(
     // Pantalla de pacientes
     object Pacientes : Screens("pacientes", "Pacientes", Icons.Default.Info)
 
-    //Pantalla de expedientes
-    object Expediente : Screens("expediente", "Expediente", Icons.Default.Info)
+    // Pantalla de expedientes sin ícono en la barra de navegación
+    object Expediente : Screens("expediente", "Expediente")
 
-    // Pantalla de psicologia
-    object Psicologia : Screens("psicologia", "Psicologia", Icons.Default.Info)
+    // Pantalla de Centro Educativo sin ícono en la barra de navegación
+    object CentroEducativo : Screens("centroeducativo", "Centro Educativo")
 
     companion object {
         // Lista de todas las pantallas disponibles
-        val values = listOf(Home, Detail, Pacientes)
+        val values = listOf(Home, Detail, Pacientes, Expediente, CentroEducativo)
     }
 }

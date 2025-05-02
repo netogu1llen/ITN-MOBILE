@@ -4,13 +4,12 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 
 @Composable
 fun ActionButtons(
     onPsicologiaClick: () -> Unit,
     //onNutricionClick: () -> Unit,
-    onBoletaClick: () -> Unit
+    onCentroEducativoClick: () -> Unit
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -27,9 +26,10 @@ fun ActionButtons(
             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
         ) {
             Text("Nutrición")
-        }*/
+        }
+         */
         Button(
-            onClick = onBoletaClick,
+            onClick = onCentroEducativoClick,
             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
         ) {
             Text("Centro Educativo")

@@ -33,14 +33,12 @@ fun PacientesListContent(
         remember(pacientesList, searchQuery) {
             val query = searchQuery.trim().lowercase()
 
-            pacientesList
-                .distinctBy { it.idExpediente }
-                .filter { paciente ->
-                    val nombreCompleto = "${paciente.nombre} ${paciente.apellidoPaterno} ${paciente.apellidoMaterno}".lowercase()
-                    val fechaFormateada = paciente.fechaNacimiento.formatearFecha().lowercase()
+            pacientesList.filter { paciente ->
+                val nombre = paciente.nombreCompleto.lowercase()
+                val fechaFormateada = paciente.fechaNacimiento.formatearFecha().lowercase()
 
-                    nombreCompleto.contains(query) || fechaFormateada.contains(query)
-                }
+                nombre.contains(query) || fechaFormateada.contains(query)
+            }
         }
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -69,11 +67,11 @@ fun PacientesListContent(
                     ) {
                         items(
                             items = filteredList,
-                            key = { paciente -> paciente.idExpediente }
+                            key = { it.idExpediente },
                         ) { paciente ->
                             PacienteCard(
                                 paciente = paciente,
-                                onClick = { onPacienteClick(paciente.idExpediente) }
+                                onClick = { onPacienteClick(paciente.idExpediente) },
                             )
                         }
                     }
