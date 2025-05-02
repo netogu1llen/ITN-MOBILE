@@ -25,6 +25,7 @@ import com.app.soffyapp.presentation.screens.detail.components.Component as Deta
 import com.app.soffyapp.presentation.screens.home.components.Component as HomeScreen
 import com.app.soffyapp.presentation.screens.pacientes.PacientesScreen
 import com.app.soffyapp.presentation.screens.expediente.ExpedienteScreen
+import com.app.soffyapp.presentation.screens.nutricional.NutricionalScreen
 import com.app.soffyapp.presentation.screens.centroeducativo.CentroEducativoScreen
 import com.app.soffyapp.presentation.screens.login.components.LoginScreen
 
@@ -128,6 +129,15 @@ fun AppNavigation() {
                     navController = navController
                 )
             }
+            composable(
+                route = "nutricion/{id}"
+            ) { backStackEntry ->
+                val pacienteId = backStackEntry.arguments?.getString("id")?.toIntOrNull() ?: return@composable
+                NutricionalScreen(
+                    pacienteId = pacienteId,
+                    navController = navController
+                )
+            }
         }
     }
 }
@@ -156,11 +166,14 @@ sealed class Screens(
     // Pantalla de pacientes
     object Pacientes : Screens("pacientes", "Pacientes", Icons.Default.Info)
 
-    // Pantalla de expedientes sin ícono en la barra de navegación
+    // Pantalla de expedientes
     object Expediente : Screens("expediente", "Expediente")
 
-    // Pantalla de Centro Educativo sin ícono en la barra de navegación
+    // Pantalla de Centro Educativo
     object CentroEducativo : Screens("centroeducativo", "Centro Educativo")
+
+    // Pantalla Nutricional
+    object Nutricional : Screens("nutricion", "Nutrición")
 
     companion object {
         // Lista de todas las pantallas disponibles
