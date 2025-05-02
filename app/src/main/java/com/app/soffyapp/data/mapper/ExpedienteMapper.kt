@@ -9,7 +9,6 @@ fun ExpedienteDto.toDomain(): Expediente =
     Expediente(
         idExpediente = idExpediente,
         nombreCompleto = nombreCompleto,
-        numExpediente = numExpediente,
         fechaNacimiento = fechaNacimiento,
         contacto = contacto,
         estado = estado,
