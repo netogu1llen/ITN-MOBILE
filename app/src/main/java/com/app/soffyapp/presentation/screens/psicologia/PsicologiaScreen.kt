@@ -48,11 +48,7 @@ fun PsicologiaScreen(
                 title = { Text("Seguimientos Psicológicos") },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(
-                            Icons.Default.ArrowBack,
-                            contentDescription = "Regresar",
-                            tint = MaterialTheme.colorScheme.onPrimary
-                        )
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Regresar")
                     }
                 }
             )

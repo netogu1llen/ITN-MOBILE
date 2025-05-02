@@ -139,14 +139,6 @@ fun ObjetivoSimpleView(objetivo: ObjetivoPsicologico) {
             .fillMaxWidth()
             .padding(vertical = 8.dp)
     ) {
-        // Titulo: Objetivos
-        Text(
-            text = objetivo.objetivo,
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.padding(bottom = 9.dp)
-        )
-
 
         // Detalles del objetivo
         if (objetivo.actividad.isNotBlank()) {
@@ -165,6 +157,24 @@ fun ObjetivoSimpleView(objetivo: ObjetivoPsicologico) {
                 modifier = Modifier.padding(bottom = 9.dp)
             )
         }
+
+        if (objetivo.actividad.isNotBlank()) {
+            Text(
+                text = "Objetivo de actividad",
+                style = MaterialTheme.typography.titleSmall,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.padding(bottom = 4.dp)
+            )
+        }
+        // Titulo: Objetivos
+        Text(
+            text = objetivo.objetivo,
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.padding(bottom = 9.dp)
+        )
+
+
 
         if (objetivo.tiempo.isNotBlank()) {
             Text(
