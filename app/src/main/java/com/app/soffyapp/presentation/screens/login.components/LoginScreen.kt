@@ -20,9 +20,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.app.soffyapp.R
-import com.app.soffyapp.presentation.screens.login.LoginUiState
-import com.app.soffyapp.presentation.screens.login.LoginViewModel
-
 /**
  * Pantalla de inicio de sesión integrada con ViewModel y Hilt
  * Añadido soporte para reintento automático de autenticación con Google

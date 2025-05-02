@@ -1,7 +1,6 @@
 package com.app.soffyapp.di
 
 import android.content.Context
-import com.app.soffyapp.R
 import com.app.soffyapp.data.remote.AuthApiService
 import com.app.soffyapp.data.remote.auth.GoogleAuthClient
 import com.app.soffyapp.data.repository.AuthRepositoryImpl
@@ -11,7 +10,6 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import retrofit2.Retrofit
 import javax.inject.Singleton
 
 /**

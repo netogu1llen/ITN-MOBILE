@@ -1,4 +1,4 @@
-package com.app.soffyapp.presentation.screens.login
+package com.app.soffyapp.presentation.screens.login.components
 
 import android.content.Intent
 import android.util.Log

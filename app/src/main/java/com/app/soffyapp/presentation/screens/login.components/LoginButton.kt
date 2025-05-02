@@ -13,7 +13,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.app.soffyapp.R
-import com.app.soffyapp.presentation.screens.login.LoginViewModel
 
 /**
  * Componente de botón para autenticación con Google
