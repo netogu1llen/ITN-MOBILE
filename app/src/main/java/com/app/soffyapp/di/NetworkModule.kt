@@ -1,6 +1,15 @@
 package com.app.soffyapp.di
 
 import com.app.soffyapp.data.remote.AuthApiService
+import com.app.soffyapp.data.remote.api.CentroEducativoApi
+import com.app.soffyapp.data.remote.api.ExpedienteApi
+import com.app.soffyapp.data.remote.api.PacientesApi
+import com.app.soffyapp.data.repository.CentroEducativoRepositoryImpl
+import com.app.soffyapp.data.repository.ExpedienteRepositoryImpl
+import com.app.soffyapp.data.repository.PacientesRepositoryImpl
+import com.app.soffyapp.domain.repository.CentroEducativoRepository
+import com.app.soffyapp.domain.repository.ExpedienteRepository
+import com.app.soffyapp.domain.repository.PacientesRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -24,7 +33,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
-
     /**
      * Provides a singleton HttpLoggingInterceptor instance configured for body logging.
      *
@@ -49,16 +57,16 @@ object NetworkModule {
     @Singleton
     fun provideOkHttpClient(
         loggingInterceptor: HttpLoggingInterceptor,
-        authInterceptor: AuthInterceptor
-    ): OkHttpClient {
-        return OkHttpClient.Builder()
+        authInterceptor: AuthInterceptor,
+    ): OkHttpClient =
+        OkHttpClient
+            .Builder()
             .addInterceptor(authInterceptor)
             .addInterceptor(loggingInterceptor)
             .connectTimeout(30, TimeUnit.SECONDS)
             .readTimeout(30, TimeUnit.SECONDS)
             .writeTimeout(30, TimeUnit.SECONDS)
             .build()
-    }
 
     /**
      * Provides a singleton Retrofit instance configured with the base API URL and Gson converter.
@@ -68,13 +76,13 @@ object NetworkModule {
      */
     @Provides
     @Singleton
-    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
-        return Retrofit.Builder()
+    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit =
+        Retrofit
+            .Builder()
             .baseUrl("http://10.0.2.2:3000/")
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-    }
 
     /**
      * Provides an [AuthApiService] implementation using the given Retrofit instance.
@@ -84,7 +92,29 @@ object NetworkModule {
      */
     @Provides
     @Singleton
-    fun provideAuthApiService(retrofit: Retrofit): AuthApiService {
-        return retrofit.create(AuthApiService::class.java)
-    }
+    fun provideAuthApiService(retrofit: Retrofit): AuthApiService = retrofit.create(AuthApiService::class.java)
+
+    @Provides
+    @Singleton
+    fun providePacientesApi(retrofit: Retrofit): PacientesApi = retrofit.create(PacientesApi::class.java)
+
+    @Provides
+    @Singleton
+    fun providePacientesRepository(api: PacientesApi): PacientesRepository = PacientesRepositoryImpl(api)
+
+    @Provides
+    @Singleton
+    fun provideExpedienteApi(retrofit: Retrofit): ExpedienteApi = retrofit.create(ExpedienteApi::class.java)
+
+    @Provides
+    @Singleton
+    fun provideExpedienteRepository(api: ExpedienteApi): ExpedienteRepository = ExpedienteRepositoryImpl(api)
+
+    @Provides
+    @Singleton
+    fun provideCentroEducativoApi(retrofit: Retrofit): CentroEducativoApi = retrofit.create(CentroEducativoApi::class.java)
+
+    @Provides
+    @Singleton
+    fun provideCentroEducativoRepository(api: CentroEducativoApi): CentroEducativoRepository = CentroEducativoRepositoryImpl(api)
 }
