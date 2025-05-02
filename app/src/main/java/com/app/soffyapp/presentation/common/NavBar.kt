@@ -25,7 +25,6 @@ fun NavBar(navController: NavController) {
     // Lista de pantallas/screens disponibles en la navegación
     val items = listOf(
         Screens.Home,  // Pantalla principal
-        Screens.Detail // Pantalla de detalle
     )
 
     // Componente Material Design para barra de navegación inferior

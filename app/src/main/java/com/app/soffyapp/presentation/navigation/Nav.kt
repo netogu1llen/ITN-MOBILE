@@ -17,17 +17,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.app.soffyapp.presentation.screens.detail.components.Component as DetailScreen
-import com.app.soffyapp.presentation.screens.home.components.Component as HomeScreen
+import androidx.navigation.navArgument
+import com.app.soffyapp.presentation.screens.home.components.HomeScreen
 import com.app.soffyapp.presentation.screens.pacientes.PacientesScreen
 import com.app.soffyapp.presentation.screens.expediente.ExpedienteScreen
 import com.app.soffyapp.presentation.screens.nutricional.NutricionalScreen
 import com.app.soffyapp.presentation.screens.centroeducativo.CentroEducativoScreen
 import com.app.soffyapp.presentation.screens.login.components.LoginScreen
+import com.app.soffyapp.presentation.screens.psicologia.PsicologiaDetailScreen
+import com.app.soffyapp.presentation.screens.psicologia.PsicologiaScreen
 
 /**
  * Componente principal de navegación de la aplicación
@@ -138,6 +141,27 @@ fun AppNavigation() {
                     navController = navController
                 )
             }
+
+            composable(
+                route = "psicologia/{id}"
+            ) { backStackEntry ->
+                val pacienteId = backStackEntry.arguments?.getString("id")?.toIntOrNull() ?: return@composable
+                PsicologiaScreen(
+                    pacienteId = pacienteId,
+                    navController = navController
+                )
+            }
+
+            composable(
+                route = "psicologia_detalle/{idSeguimiento}",
+                arguments = listOf(navArgument("idSeguimiento") { type = NavType.IntType })
+            ) { backStackEntry ->
+                val idSeguimiento = backStackEntry.arguments?.getInt("idSeguimiento") ?: return@composable
+                PsicologiaDetailScreen(
+                    idSeguimiento = idSeguimiento,
+                    navController = navController
+                )
+            }
         }
     }
 }
@@ -160,16 +184,13 @@ sealed class Screens(
     // Pantalla de inicio
     object Home : Screens("home", "Inicio", Icons.Default.Home)
 
-    // Pantalla de detalle
-    object Detail : Screens("detail", "Detalle", Icons.Default.Info)
-
     // Pantalla de pacientes
     object Pacientes : Screens("pacientes", "Pacientes", Icons.Default.Info)
 
-    // Pantalla de expedientes
+    // Pantalla de expedientes sin ícono en la barra de navegación
     object Expediente : Screens("expediente", "Expediente")
 
-    // Pantalla de Centro Educativo
+    // Pantalla de Centro Educativo sin ícono en la barra de navegación
     object CentroEducativo : Screens("centroeducativo", "Centro Educativo")
 
     // Pantalla Nutricional
@@ -177,6 +198,6 @@ sealed class Screens(
 
     companion object {
         // Lista de todas las pantallas disponibles
-        val values = listOf(Home, Detail, Pacientes, Expediente, CentroEducativo)
+        val values = listOf(Home, Pacientes, Expediente, CentroEducativo, Nutricional)
     }
 }

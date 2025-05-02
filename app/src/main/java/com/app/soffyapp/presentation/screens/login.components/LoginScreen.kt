@@ -20,6 +20,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.app.soffyapp.R
+import androidx.compose.foundation.background
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.graphics.Color
 /**
  * Pantalla de inicio de sesión integrada con ViewModel y Hilt
  * Añadido soporte para reintento automático de autenticación con Google
@@ -83,11 +87,13 @@ fun LoginScreen(
                 .padding(top = 75.dp),
             contentAlignment = Alignment.TopCenter
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.circulo),
-                contentDescription = null,
-                contentScale = ContentScale.Fit,
-                modifier = Modifier.size(290.dp)
+            Box(
+                modifier = Modifier
+                    .size(290.dp)
+                    .background(
+                        color = Color.White.copy(alpha = 0.70f),
+                        shape = RoundedCornerShape(24.dp)
+                    )
             )
         }
 
