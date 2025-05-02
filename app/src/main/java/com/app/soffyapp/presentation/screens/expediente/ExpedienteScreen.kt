@@ -86,7 +86,7 @@ fun ExpedienteScreen(
                     ) {
                         ActionButtons(
                             onPsicologiaClick = { navController.navigate("psicologia/$pacienteId") },
-                            // onNutricionClick = { navController.navigate("nutricion/$pacienteId") },
+                            onNutricionClick = { navController.navigate("nutricion/$pacienteId") },
                             onCentroEducativoClick = { navController.navigate("centroeducativo/$pacienteId") },
                         )
                         Log.d("ExpedienteScreen", "Expediente recibido: $expediente")

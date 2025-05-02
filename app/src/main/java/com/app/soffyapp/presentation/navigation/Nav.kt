@@ -26,6 +26,7 @@ import androidx.navigation.navArgument
 import com.app.soffyapp.presentation.screens.home.components.HomeScreen
 import com.app.soffyapp.presentation.screens.pacientes.PacientesScreen
 import com.app.soffyapp.presentation.screens.expediente.ExpedienteScreen
+import com.app.soffyapp.presentation.screens.nutricional.NutricionalScreen
 import com.app.soffyapp.presentation.screens.centroeducativo.CentroEducativoScreen
 import com.app.soffyapp.presentation.screens.login.components.LoginScreen
 import com.app.soffyapp.presentation.screens.psicologia.PsicologiaDetailScreen
@@ -61,7 +62,7 @@ fun AppNavigation() {
                 ) {
                     // Itera sobre todas las pantallas definidas, excluyendo Expediente y CentroEducativo
                     Screens.values.filter { screen ->
-                        screen != Screens.Expediente && screen != Screens.CentroEducativo
+                        screen != Screens.Expediente && screen != Screens.CentroEducativo && screen != Screens.Nutricional
                     }.forEach { screen ->
                         NavigationBarItem(
                             icon = {
@@ -130,6 +131,15 @@ fun AppNavigation() {
                     navController = navController
                 )
             }
+            composable(
+                route = "nutricion/{id}"
+            ) { backStackEntry ->
+                val pacienteId = backStackEntry.arguments?.getString("id")?.toIntOrNull() ?: return@composable
+                NutricionalScreen(
+                    pacienteId = pacienteId,
+                    navController = navController
+                )
+            }
 
             composable(
                 route = "psicologia/{id}"
@@ -182,8 +192,11 @@ sealed class Screens(
     // Pantalla de Centro Educativo sin ícono en la barra de navegación
     object CentroEducativo : Screens("centroeducativo", "Centro Educativo")
 
+    // Pantalla Nutricional
+    object Nutricional : Screens("nutricion", "Nutrición")
+
     companion object {
         // Lista de todas las pantallas disponibles
-        val values = listOf(Home, Pacientes, Expediente, CentroEducativo)
+        val values = listOf(Home, Pacientes, Expediente, CentroEducativo, Nutricional)
     }
 }
