@@ -3,7 +3,6 @@ package com.app.soffyapp.domain.model
 data class Expediente(
     val idExpediente: Int,
     val nombreCompleto: String,
-    val numExpediente: String,
     val fechaNacimiento: String,
     val contacto: String,
     val estado: String,
