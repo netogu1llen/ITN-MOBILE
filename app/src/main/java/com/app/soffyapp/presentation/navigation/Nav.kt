@@ -23,7 +23,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.app.soffyapp.presentation.screens.detail.components.Component as DetailScreen
 import com.app.soffyapp.presentation.screens.home.components.Component as HomeScreen
 import com.app.soffyapp.presentation.screens.pacientes.PacientesScreen
 import com.app.soffyapp.presentation.screens.expediente.ExpedienteScreen
@@ -105,7 +104,6 @@ fun AppNavigation() {
             // Definición de pantallas/composables
             composable(Screens.Login.route) { LoginScreen(navController) }
             composable(Screens.Home.route) { HomeScreen(navController) }
-            composable(Screens.Detail.route) { DetailScreen(navController) }
             composable(Screens.Pacientes.route) {
                 PacientesScreen(
                     onPacienteClick = { pacienteId ->
@@ -175,9 +173,6 @@ sealed class Screens(
     // Pantalla de inicio
     object Home : Screens("home", "Inicio", Icons.Default.Home)
 
-    // Pantalla de detalle
-    object Detail : Screens("detail", "Detalle", Icons.Default.Info)
-
     // Pantalla de pacientes
     object Pacientes : Screens("pacientes", "Pacientes", Icons.Default.Info)
 
@@ -189,6 +184,6 @@ sealed class Screens(
 
     companion object {
         // Lista de todas las pantallas disponibles
-        val values = listOf(Home, Detail, Pacientes, Expediente, CentroEducativo)
+        val values = listOf(Home, Pacientes, Expediente, CentroEducativo)
     }
 }
