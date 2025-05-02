@@ -23,7 +23,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.app.soffyapp.presentation.screens.home.components.Component as HomeScreen
+import com.app.soffyapp.presentation.screens.home.components.HomeScreen
 import com.app.soffyapp.presentation.screens.pacientes.PacientesScreen
 import com.app.soffyapp.presentation.screens.expediente.ExpedienteScreen
 import com.app.soffyapp.presentation.screens.centroeducativo.CentroEducativoScreen
