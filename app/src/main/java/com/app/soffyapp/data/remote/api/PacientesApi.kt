@@ -1,16 +1,15 @@
 package com.app.soffyapp.data.remote.api
 
-import com.app.soffyapp.data.remote.dto.PacienteDto
 import com.app.soffyapp.data.remote.dto.PacientesListDto
 import retrofit2.http.GET
 import retrofit2.http.Path
 
 interface PacientesApi {
-    @GET("pacientes")
+    @GET("api/pacientes")
     suspend fun getPacientesList(): PacientesListDto
 
-    @GET("pacientes/{id}")
+    @GET("api/pacientes")
     suspend fun getPaciente(
         @Path("id") id: String,
-    ): PacienteDto
+    ): PacientesListDto
 }
