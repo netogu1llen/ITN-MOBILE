@@ -4,12 +4,15 @@ import com.app.soffyapp.data.remote.AuthApiService
 import com.app.soffyapp.data.remote.api.CentroEducativoApi
 import com.app.soffyapp.data.remote.api.ExpedienteApi
 import com.app.soffyapp.data.remote.api.PacientesApi
+import com.app.soffyapp.data.remote.api.PsicologiaApi
 import com.app.soffyapp.data.repository.CentroEducativoRepositoryImpl
 import com.app.soffyapp.data.repository.ExpedienteRepositoryImpl
 import com.app.soffyapp.data.repository.PacientesRepositoryImpl
+import com.app.soffyapp.data.repository.PsicologiaRepositoryImpl
 import com.app.soffyapp.domain.repository.CentroEducativoRepository
 import com.app.soffyapp.domain.repository.ExpedienteRepository
 import com.app.soffyapp.domain.repository.PacientesRepository
+import com.app.soffyapp.domain.repository.PsicologiaRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -79,7 +82,8 @@ object NetworkModule {
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit =
         Retrofit
             .Builder()
-            .baseUrl("https://www.fundacion-soffy.org/")
+            //.baseUrl("https://www.fundacion-soffy.org/")
+            .baseUrl("http://10.0.2.2:3000/")
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
@@ -117,4 +121,12 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideCentroEducativoRepository(api: CentroEducativoApi): CentroEducativoRepository = CentroEducativoRepositoryImpl(api)
+
+    @Provides
+    @Singleton
+    fun providePsicologiaApi(retrofit: Retrofit): PsicologiaApi = retrofit.create(PsicologiaApi::class.java)
+
+    @Provides
+    @Singleton
+    fun providePsicologiaRepository(api: PsicologiaApi): PsicologiaRepository = PsicologiaRepositoryImpl(api)
 }
