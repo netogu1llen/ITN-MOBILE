@@ -1,6 +1,6 @@
 package com.app.soffyapp.di
 
-import com.app.soffyapp.data.local.TokenDataStore
+import com.app.soffyapp.data.localy.TokenDataStore
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
