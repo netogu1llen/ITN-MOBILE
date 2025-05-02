@@ -62,7 +62,7 @@ fun AppNavigation() {
                 ) {
                     // Itera sobre todas las pantallas definidas, excluyendo Expediente y CentroEducativo
                     Screens.values.filter { screen ->
-                        screen != Screens.Expediente && screen != Screens.CentroEducativo
+                        screen != Screens.Expediente && screen != Screens.CentroEducativo && screen != Screens.Nutricional
                     }.forEach { screen ->
                         NavigationBarItem(
                             icon = {
@@ -105,7 +105,6 @@ fun AppNavigation() {
             // Definición de pantallas/composables
             composable(Screens.Login.route) { LoginScreen(navController) }
             composable(Screens.Home.route) { HomeScreen(navController) }
-            composable(Screens.Detail.route) { DetailScreen(navController) }
             composable(Screens.Pacientes.route) {
                 PacientesScreen(
                     onPacienteClick = { pacienteId ->
