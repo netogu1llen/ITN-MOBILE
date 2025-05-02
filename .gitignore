@@ -1,93 +1,37 @@
-# =============================================
-# Configuraciones de IDE y entornos de desarrollo
-# =============================================
-# Android Studio
-*.iml
-.idea/
+# Gradle files
 .gradle/
-.navigation/
-captures/
-*.swp
-
-# Archivos temporales del sistema
-.DS_Store
-Thumbs.db
-ehthumbs.db
-
-# =============================================
-# Build y artefactos de compilación
-# =============================================
-/build/
-/app/build/
+build/
 */build/
-*.apk
-*.aar
-*.ap_
-*.aab
-bin/
-gen/
-out/
-.repo/
 
-# =============================================
-# Certificados y claves de seguridad
-# =============================================
-*.keystore
+# Local configuration file (sdk path, etc)
+local.properties
+
+# Log files
+*.log
+
+# Android Studio
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+
+# Keystore files
 *.jks
 
-# =============================================
-# Entorno y configuraciones
-# =============================================
-# Archivos de entorno
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+# OS generated files
+.DS_Store
+Thumbs.db
 
-# Configuraciones locales
-local.properties
-*.orig
+# Crashlytics / Firebase
+crashlytics-build.properties
 
-# =============================================
-# Firebase y servicios de Google
-# =============================================
-google-services.json  # Reemplazar por template en CI/CD
-app/google-services.json
+# IntelliJ
+.idea/
+*.iml
 
-# =============================================
-# Logs y archivos de diagnóstico
-# =============================================
-*.log
-*.hprof
-*.trace
-
-# =============================================
-# Jetpack Compose y Kotlin
-# =============================================
-/compose-app/
+# Kotlin specific
 *.kotlin_module
 
-# =============================================
-# Fastlane (para despliegues automáticos)
-# =============================================
-fastlane/report.xml
-fastlane/Preview.html
-fastlane/screenshots
-
-# =============================================
-# Dependencias y cachés
-# =============================================
-.cache/
-*/target/
-
-# =============================================
-# Configuración opcional para Room Database
-# =============================================
-# Descomentar si necesitas versionar schemas manualmente:
-# !/app/schemas/*.json
-
-# =============================================
-# Archivos nativos/debug
-# =============================================
-*.so
+# Dependency caches
+.cxx/
