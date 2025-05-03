@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SoffyApp</string>
+    <!-- Agrega tu Client ID de Google Cloud aquí -->
+    <string name="google_cloud_client_id">http://715251024329-q6nr88gooak3imr4grb2gsfbiueitkh7.apps.googleusercontent.com</string>
+    <!-- Otros strings de la aplicación -->
+</resources>
