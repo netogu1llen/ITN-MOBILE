@@ -3,7 +3,7 @@ package com.app.soffyapp.data.remote.dto
 import com.google.gson.annotations.SerializedName
 
 data class ExpedienteDto(
-    @SerializedName("IDExpediente") val idExpediente: Int,
+    @SerializedName("IDExpediente") val idExpediente: String,
     @SerializedName("nombreCompleto") val nombreCompleto: String,
     @SerializedName("numExpediente") val numExpediente: String,
     @SerializedName("fechaNacimiento") val fechaNacimiento: String,

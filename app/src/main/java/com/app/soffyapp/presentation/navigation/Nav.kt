@@ -116,7 +116,7 @@ fun AppNavigation() {
             composable(
                 route = "expediente/{id}",
             ) { backStackEntry ->
-                val pacienteId = backStackEntry.arguments?.getString("id")?.toIntOrNull() ?: return@composable
+                val pacienteId = backStackEntry.arguments?.getString("id") ?: return@composable
                 ExpedienteScreen(
                     pacienteId = pacienteId,
                     navController = navController
@@ -125,7 +125,7 @@ fun AppNavigation() {
             composable(
                 route = "centroeducativo/{id}"
             ) { backStackEntry ->
-                val pacienteId = backStackEntry.arguments?.getString("id")?.toIntOrNull() ?: return@composable
+                val pacienteId = backStackEntry.arguments?.getString("id") ?: return@composable
                 CentroEducativoScreen(
                     pacienteId = pacienteId,
                     navController = navController
@@ -134,7 +134,7 @@ fun AppNavigation() {
             composable(
                 route = "nutricion/{id}"
             ) { backStackEntry ->
-                val pacienteId = backStackEntry.arguments?.getString("id")?.toIntOrNull() ?: return@composable
+                val pacienteId = backStackEntry.arguments?.getString("id") ?: return@composable
                 NutricionalScreen(
                     pacienteId = pacienteId,
                     navController = navController
@@ -144,7 +144,7 @@ fun AppNavigation() {
             composable(
                 route = "psicologia/{id}"
             ) { backStackEntry ->
-                val pacienteId = backStackEntry.arguments?.getString("id")?.toIntOrNull() ?: return@composable
+                val pacienteId = backStackEntry.arguments?.getString("id") ?: return@composable
                 PsicologiaScreen(
                     pacienteId = pacienteId,
                     navController = navController

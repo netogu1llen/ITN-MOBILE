@@ -13,7 +13,7 @@ class PsicologiaRepositoryImpl @Inject constructor(
     private val api: PsicologiaApi
 ) : PsicologiaRepository {
 
-    override suspend fun getPsicologiaList(idExpediente: Int): PsicologiaListDto {
+    override suspend fun getPsicologiaList(idExpediente: String): PsicologiaListDto {
         return api.getPsicologiaList(idExpediente)
     }
 

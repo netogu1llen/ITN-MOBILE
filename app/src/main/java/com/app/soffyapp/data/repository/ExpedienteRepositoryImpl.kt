@@ -11,7 +11,7 @@ import javax.inject.Singleton
 class ExpedienteRepositoryImpl @Inject constructor(
     private val api: ExpedienteApi,
 ) : ExpedienteRepository {
-    override suspend fun getExpedienteById(id: Int): Expediente {
+    override suspend fun getExpedienteById(id: String): Expediente {
         return api.getExpediente(id).expediente.toDomain()
     }
 }

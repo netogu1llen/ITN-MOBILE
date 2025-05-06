@@ -17,7 +17,7 @@ class NutricionalViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(NutricionalUiState())
     val uiState: StateFlow<NutricionalUiState> = _uiState
 
-    fun loadNutricionalData(expedienteId: Int) {
+    fun loadNutricionalData(expedienteId: String) {
         _uiState.value = NutricionalUiState(isLoading = true)
 
         viewModelScope.launch {

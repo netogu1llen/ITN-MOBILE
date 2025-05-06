@@ -27,7 +27,7 @@ fun PacientesListContent(
     error: String?,
     searchQuery: String,
     onSearchQueryChange: (String) -> Unit,
-    onPacienteClick: (Int) -> Unit,
+    onPacienteClick: (String) -> Unit,
 ) {
     val filteredList =
         remember(pacientesList, searchQuery) {

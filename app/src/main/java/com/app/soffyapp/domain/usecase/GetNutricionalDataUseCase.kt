@@ -7,7 +7,7 @@ import javax.inject.Inject
 class GetNutricionalDataUseCase @Inject constructor(
     private val repository: NutricionalRepository
 ) {
-    suspend operator fun invoke(idExpediente: Int): NutricionalData {
+    suspend operator fun invoke(idExpediente: String): NutricionalData {
         return repository.getNutricionalData(idExpediente)
     }
 }

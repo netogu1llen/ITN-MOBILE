@@ -20,7 +20,7 @@ class CentroEducativoRepositoryImpl
     // Obtiene los datos del Centro Educativo desde la API,
     // mapea la lista de resultados al modelo de dominio
     // y retorna también el nombre del alumno como primer elemento del par.
-    override suspend fun getCentroEducativoList(idExpediente: Int): Pair<String, List<CentroEducativo>> {
+    override suspend fun getCentroEducativoList(idExpediente: String): Pair<String, List<CentroEducativo>> {
         val response = api.getCentroEducativoList(idExpediente)
         return Pair(
             response.alumno,

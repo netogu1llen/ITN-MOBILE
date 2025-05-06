@@ -35,7 +35,7 @@ import com.app.soffyapp.presentation.screens.centroeducativo.components.CentroEd
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CentroEducativoScreen(
-    pacienteId: Int, 
+    pacienteId: String,
     navController: NavController,
     viewModel: CentroEducativoViewModel = hiltViewModel()
 ) {

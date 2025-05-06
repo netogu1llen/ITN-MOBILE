@@ -20,7 +20,7 @@ class ExpedienteViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(ExpedienteUiState())
     val uiState: StateFlow<ExpedienteUiState> = _uiState.asStateFlow()
 
-    fun loadExpediente(pacienteId: Int) {  // ← pacienteId ya es Int, no hay que convertir
+    fun loadExpediente(pacienteId: String) {  // ← pacienteId ya es Int, no hay que convertir
         viewModelScope.launch {
             getExpedienteUseCase(pacienteId).collect { result -> // ← Directo
                 when (result) {

@@ -9,7 +9,7 @@ import retrofit2.http.Path
 interface PsicologiaApi {
     @GET("api/psicologia/{idExpediente}")
     suspend fun getPsicologiaList(
-        @Path("idExpediente") idExpediente: Int
+        @Path("idExpediente") idExpediente: String
     ): PsicologiaListDto
 
     @GET("api/psicologia/detalle/{idSeguimiento}")

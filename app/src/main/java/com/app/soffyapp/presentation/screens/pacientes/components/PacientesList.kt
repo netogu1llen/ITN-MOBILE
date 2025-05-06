@@ -13,7 +13,7 @@ import com.app.soffyapp.domain.model.Paciente
 @Composable
 fun PacientesList(
     pacientesList: List<Paciente>,
-    onPacienteClick: (Int) -> Unit,
+    onPacienteClick: (String) -> Unit,
 ) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),

@@ -20,7 +20,7 @@ class CentroEducativoViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(CentroEducativoUiState())
     val uiState: StateFlow<CentroEducativoUiState> = _uiState.asStateFlow()
 
-    fun loadCentroEducativo(idExpediente: Int) {
+    fun loadCentroEducativo(idExpediente: String) {
         viewModelScope.launch {
             getCentroEducativoListUseCase(idExpediente).collect { result ->
                 _uiState.update {

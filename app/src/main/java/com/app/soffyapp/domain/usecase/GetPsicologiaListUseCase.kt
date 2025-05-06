@@ -11,7 +11,7 @@ import javax.inject.Inject
 class GetPsicologiaListUseCase @Inject constructor(
     private val repository: PsicologiaRepository
 ) {
-    operator fun invoke(idExpediente: Int): Flow<Result<Pair<String, List<Psicologia>>>> = flow {
+    operator fun invoke(idExpediente: String): Flow<Result<Pair<String, List<Psicologia>>>> = flow {
         try {
             emit(Result.Loading)
             val result = repository.getPsicologiaList(idExpediente)

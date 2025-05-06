@@ -35,7 +35,7 @@ import com.app.soffyapp.presentation.screens.expediente.components.InfoLine
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExpedienteScreen(
-    pacienteId: Int,
+    pacienteId: String,
     navController: NavController,
     viewModel: ExpedienteViewModel = hiltViewModel(),
 ) {

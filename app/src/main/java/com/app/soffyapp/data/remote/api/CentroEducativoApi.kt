@@ -11,6 +11,6 @@ interface CentroEducativoApi {
     // La respuesta será un CentroEducativoListDto que contiene una lista de boletas.
     @GET("api/boletas/{idExpediente}")
     suspend fun getCentroEducativoList(
-        @Path("idExpediente") idExpediente: Int, // Inyecta el ID del expediente en la URL.
+        @Path("idExpediente") idExpediente: String, // Inyecta el ID del expediente en la URL.
     ): CentroEducativoListDto
 }

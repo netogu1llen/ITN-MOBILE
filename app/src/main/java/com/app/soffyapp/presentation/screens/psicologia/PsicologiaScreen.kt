@@ -23,7 +23,7 @@ import com.app.soffyapp.presentation.screens.psicologia.components.PsicologiaLis
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PsicologiaScreen(
-    pacienteId: Int,
+    pacienteId: String,
     navController: NavController,
     viewModel: PsicologiaViewModel = hiltViewModel()
 ) {

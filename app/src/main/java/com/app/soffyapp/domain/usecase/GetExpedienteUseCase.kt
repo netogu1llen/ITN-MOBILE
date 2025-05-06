@@ -12,7 +12,7 @@ class GetExpedienteUseCase
 constructor(
     private val repository: ExpedienteRepository,
 ) {
-    operator fun invoke(id: Int): Flow<Result<Expediente>> =
+    operator fun invoke(id: String): Flow<Result<Expediente>> =
         flow {
             try {
                 emit(Result.Loading)

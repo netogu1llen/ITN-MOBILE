@@ -10,7 +10,7 @@ import javax.inject.Inject
 class GetCentroEducativoListUseCase @Inject constructor(
     private val repository: CentroEducativoRepository
 ) {
-    operator fun invoke(idExpediente: Int): Flow<Result<Pair<String, List<CentroEducativo>>>> = flow {
+    operator fun invoke(idExpediente: String): Flow<Result<Pair<String, List<CentroEducativo>>>> = flow {
         emit(Result.Loading)
         try {
             val (alumno, lista) = repository.getCentroEducativoList(idExpediente)

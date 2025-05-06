@@ -18,7 +18,7 @@ import androidx.navigation.NavController
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NutricionalScreen(
-    pacienteId: Int,
+    pacienteId: String,
     navController: NavController,
     viewModel: NutricionalViewModel = hiltViewModel()
 ) {

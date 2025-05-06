@@ -21,7 +21,7 @@ import com.app.soffyapp.presentation.screens.pacientes.components.PacientesListC
 @Suppress("ktlint:standard:function-naming")
 @Composable
 fun PacientesScreen(
-    onPacienteClick: (Int) -> Unit,
+    onPacienteClick: (String) -> Unit,
     viewModel: PacientesViewModel = hiltViewModel(),
 ) {
     var searchQuery by remember { mutableStateOf("") }

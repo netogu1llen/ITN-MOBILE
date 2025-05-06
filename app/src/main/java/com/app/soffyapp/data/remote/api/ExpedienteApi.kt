@@ -9,6 +9,6 @@ import retrofit2.http.Path
 interface ExpedienteApi {
     @GET("api/expediente/{id}")
     suspend fun getExpediente(
-        @Path("id") id: Int,
+        @Path("id") id: String,
     ): ExpedienteResponseDto
 }

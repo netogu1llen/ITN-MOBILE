@@ -1,7 +1,7 @@
 package com.app.soffyapp.domain.model
 
 data class Paciente(
-    val idExpediente: Int,
+    val idExpediente: String,
     val nombreCompleto: String,
     val fechaNacimiento: String,
     val nvEscolar: String,
@@ -10,13 +10,13 @@ data class Paciente(
         fun getMockData(): List<Paciente> =
             listOf(
                 Paciente(
-                    idExpediente = 1,
+                    idExpediente = "",
                     nombreCompleto = "Juan Perez Gomez",
                     fechaNacimiento = "2005-08-15",
                     nvEscolar = "Secundaria",
                 ),
                 Paciente(
-                    idExpediente = 2,
+                    idExpediente = "",
                     nombreCompleto = "Ana Ruiz Sanchez",
                     fechaNacimiento = "2006-11-20",
                     nvEscolar = "Secundaria",

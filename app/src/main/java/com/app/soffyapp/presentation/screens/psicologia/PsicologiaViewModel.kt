@@ -28,7 +28,7 @@ class PsicologiaViewModel @Inject constructor(
     private val _navigationEvents = MutableSharedFlow<NavigationEvent>()
     val navigationEvents: SharedFlow<NavigationEvent> = _navigationEvents.asSharedFlow()
 
-    fun loadPsicologia(idExpediente: Int) {
+    fun loadPsicologia(idExpediente: String) {
         _uiState.update { it.copy(isLoading = true) }
 
         viewModelScope.launch {

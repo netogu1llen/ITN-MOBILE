@@ -9,7 +9,7 @@ import javax.inject.Inject
 class NutricionalRepositoryImpl @Inject constructor(
     private val api: NutricionalApi
 ) : NutricionalRepository {
-    override suspend fun getNutricionalData(idExpediente: Int): NutricionalData {
+    override suspend fun getNutricionalData(idExpediente: String): NutricionalData {
         return api.getNutricionalData(idExpediente).data.toDomain()
     }
 }

@@ -7,6 +7,6 @@ import retrofit2.http.Path
 interface NutricionalApi {
     @GET("/api/nutricional/{idExpediente}")
     suspend fun getNutricionalData(
-        @Path("idExpediente") idExpediente: Int
+        @Path("idExpediente") idExpediente: String
     ): NutricionalResultDto
 }
